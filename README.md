@@ -517,5 +517,5 @@ MIT License — free to use for personal and commercial projects.
 ---
 
 <div align="center">
-  <strong>Built with ❤️ — HiveNest E-Commerce Platform</strong>
+  <strong>Built with 🩶 — HiveNest E-Commerce Platform</strong>
 </div>
