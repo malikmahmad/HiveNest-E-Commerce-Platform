@@ -5,9 +5,5 @@
   "installCommand": "npm install",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
-  ],
-  "env": {
-    "VITE_API_URL": "@hivenest_api_url",
-    "VITE_GOOGLE_CLIENT_ID": "@hivenest_google_client_id"
-  }
+  ]
 }
