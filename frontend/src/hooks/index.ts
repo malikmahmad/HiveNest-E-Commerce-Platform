@@ -1,5 +1,4 @@
 import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
-import { useCallback, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { authAPI, cartAPI, wishlistAPI, productAPI, orderAPI, reviewAPI, couponAPI, blogAPI } from '../services/api';
 import { useAuthStore, useCartStore, useWishlistStore } from '../store';

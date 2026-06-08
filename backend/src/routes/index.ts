@@ -19,7 +19,7 @@ import {
 const router = Router();
 
 // Multer for temp uploads (Cloudinary)
-const tempUpload = multer({ dest: '/tmp/uploads/' });
+const tempUpload = multer({ dest: path.join(process.cwd(), 'tmp', 'uploads') });
 
 // Multer for local uploads — saves to /uploads folder in project root
 const uploadDir = path.join(process.cwd(), 'uploads');

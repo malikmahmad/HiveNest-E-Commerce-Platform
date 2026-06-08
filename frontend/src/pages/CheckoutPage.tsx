@@ -37,7 +37,7 @@ export default function CheckoutPage() {
     }
   }, [profileData, addresses.length]);
 
-  const shipping = subtotal - discount > 100 ? 0 : 5;
+  const shipping = subtotal > 100 ? 0 : 5; // match backend — pre-discount subtotal
   const total = subtotal - discount + shipping;
 
   const handleApplyCoupon = async () => {

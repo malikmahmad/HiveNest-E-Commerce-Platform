@@ -68,15 +68,16 @@ const GuestRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 export default function App() {
-  const { isAuthenticated, setAuth, accessToken } = useAuthStore();
+  const { isAuthenticated, setAuth } = useAuthStore();
 
   // On app load, refresh user data from server to get latest role
   useEffect(() => {
-    if (isAuthenticated && accessToken) {
+    const token = localStorage.getItem('accessToken');
+    if (isAuthenticated && token) {
       authAPI.getMe()
         .then(({ data }) => {
           const user = data.data;
-          setAuth(user, accessToken);
+          setAuth(user, token);
         })
         .catch(() => {
           // token expired — clearAuth handled by axios interceptor

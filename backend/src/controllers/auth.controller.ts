@@ -38,20 +38,26 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
       email,
       password: hashedPassword,
       emailVerifyToken: smtpConfigured ? emailVerifyToken : null,
-      // Auto-verify if SMTP not configured (development mode)
       isEmailVerified: !smtpConfigured,
     },
-    select: { id: true, name: true, email: true, role: true },
+    select: { id: true, name: true, email: true, role: true, avatar: true },
   });
 
   // Send welcome/verification email (non-blocking)
   if (smtpConfigured) {
     sendVerificationEmail(email, name, emailVerifyToken).catch(() => {});
+    ApiResponse.created(res, { user }, 'Account created! Please check your email to verify your account.');
+  } else {
+    // Dev mode: auto-verified — return token so frontend can auto-login
+    const payload = { userId: user.id, email: user.email, role: user.role };
+    const { accessToken, refreshToken } = generateTokenPair(payload);
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { refreshToken: await bcrypt.hash(refreshToken, 10) },
+    });
+    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: config.isProd, sameSite: 'strict', maxAge: 7 * 24 * 60 * 60 * 1000 });
+    ApiResponse.created(res, { user, accessToken }, 'Account created successfully! Welcome to HiveNest 🎉');
   }
-
-  ApiResponse.created(res, user, smtpConfigured
-    ? 'Account created! Please check your email to verify your account.'
-    : 'Account created successfully! You can now log in.');
 };
 
 // ─── VERIFY EMAIL ────────────────────────────────────────────
