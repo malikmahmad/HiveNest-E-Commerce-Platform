@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.env
+*.log
+.DS_Store
+coverage/
+.nyc_output/
+*.tsbuildinfo
+backend/logs/
+/tmp/
+backend/prisma/dev.db
+backend/prisma/dev.db-journal
+backend/uploads/
