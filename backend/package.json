@@ -5,10 +5,10 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon --exec ts-node src/server.ts",
-    "build": "tsc",
+    "build": "npx tsc --project tsconfig.json",
     "start": "node dist/server.js",
-    "db:generate": "prisma generate",
-    "db:migrate": "prisma migrate deploy",
+    "db:generate": "npx prisma generate",
+    "db:migrate": "npx prisma migrate deploy",
     "db:seed": "ts-node prisma/seed.ts",
     "db:studio": "prisma studio"
   },
