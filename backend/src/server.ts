@@ -42,8 +42,9 @@ app.use(notFound);
 app.use(errorHandler);
 
 // ─── START SERVER ─────────────────────────────────────────────
-app.listen(config.port, () => {
-  logger.info(`🚀 HiveNest API running on port ${config.port} [${config.nodeEnv}]`);
+const PORT = process.env.PORT || config.port;
+app.listen(PORT, () => {
+  logger.info(`🚀 HiveNest API running on port ${PORT} [${config.nodeEnv}]`);
 });
 
 export default app;
