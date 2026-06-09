@@ -1,0 +1,21 @@
+import { Request, Response } from 'express';
+export declare const getDashboard: (req: Request, res: Response) => Promise<void>;
+export declare const adminGetOrders: (req: Request, res: Response) => Promise<void>;
+export declare const adminUpdateOrder: (req: Request, res: Response) => Promise<void>;
+export declare const adminGetUsers: (req: Request, res: Response) => Promise<void>;
+export declare const adminUpdateUser: (req: Request, res: Response) => Promise<void>;
+export declare const adminGetCategories: (req: Request, res: Response) => Promise<void>;
+export declare const adminCreateCategory: (req: Request, res: Response) => Promise<void>;
+export declare const adminUpdateCategory: (req: Request, res: Response) => Promise<void>;
+export declare const adminDeleteCategory: (req: Request, res: Response) => Promise<void>;
+export declare const adminGetCoupons: (req: Request, res: Response) => Promise<void>;
+export declare const adminCreateCoupon: (req: Request, res: Response) => Promise<void>;
+export declare const adminUpdateCoupon: (req: Request, res: Response) => Promise<void>;
+export declare const adminDeleteCoupon: (req: Request, res: Response) => Promise<void>;
+export declare const adminGetBlogs: (req: Request, res: Response) => Promise<void>;
+export declare const adminCreateBlog: (req: Request, res: Response) => Promise<void>;
+export declare const adminUpdateBlog: (req: Request, res: Response) => Promise<void>;
+export declare const adminDeleteBlog: (req: Request, res: Response) => Promise<void>;
+export declare const adminGetInventory: (req: Request, res: Response) => Promise<void>;
+export declare const adminUpdateInventory: (req: Request, res: Response) => Promise<void>;
+//# sourceMappingURL=admin.controller.d.ts.map

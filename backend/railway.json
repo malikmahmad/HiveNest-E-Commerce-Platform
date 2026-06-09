@@ -1,10 +1,10 @@
 {
   "$schema": "https://railway.app/railway.schema.json",
   "build": {
-    "buildCommand": "npm install && npm run db:generate && npm run build"
+    "buildCommand": "npx prisma generate"
   },
   "deploy": {
-    "startCommand": "npm run db:migrate && node dist/server.js",
+    "startCommand": "npx prisma migrate deploy && node dist/server.js",
     "healthcheckPath": "/health",
     "healthcheckTimeout": 300,
     "restartPolicyType": "ON_FAILURE",
