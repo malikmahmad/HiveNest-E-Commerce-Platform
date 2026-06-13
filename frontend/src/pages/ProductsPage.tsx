@@ -1,11 +1,12 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSearchParams, useParams } from 'react-router-dom';
-import { SlidersHorizontal, ChevronDown, X, Grid3X3, List } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { SlidersHorizontal, X } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { useProducts } from '../hooks';
 import ProductCard from '../components/features/products/ProductCard';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
+import type { ProductFilters } from '../types';
 
 const SORT_OPTIONS = [
   { value: 'newest', label: 'Newest First' },
@@ -39,8 +40,9 @@ export default function ProductsPage() {
   const trending = searchParams.get('trending') === 'true';
   const flashSale = searchParams.get('flashSale') === 'true';
 
-  const filters = {
-    page, sort, search, minPrice, maxPrice,
+  const filters: ProductFilters = {
+    page, search, minPrice, maxPrice,
+    sort: (sort as ProductFilters['sort']) || 'newest',
     ...(categorySlug ? { category: categorySlug } : {}),
     ...(featured ? { featured: true } : {}),
     ...(newArrival ? { newArrival: true } : {}),
@@ -60,10 +62,6 @@ export default function ProductsPage() {
     next.delete('page');
     setSearchParams(next);
   };
-
-  const pageTitle = categorySlug
-    ? `${categorySlug.charAt(0).toUpperCase() + categorySlug.slice(1)} — HiveNest`
-    : search ? `Search: "${search}" — HiveNest` : 'All Products — HiveNest';
 
   return (
     <>

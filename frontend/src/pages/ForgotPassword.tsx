@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useMutation } from '@tanstack/react-query';
-import toast from 'react-hot-toast';
 import { authAPI } from '../services/api';
 import { Loader2, CheckCircle } from 'lucide-react';
 

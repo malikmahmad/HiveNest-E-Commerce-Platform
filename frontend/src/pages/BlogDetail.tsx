@@ -5,11 +5,6 @@ import { Calendar, Eye, ChevronRight, ArrowLeft } from 'lucide-react';
 import { useBlog } from '../hooks';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 
-function proxyImage(url?: string) {
-  if (!url) return null;
-  return url;
-}
-
 function BlogFeaturedImage({ src, alt }: { src: string; alt: string }) {
   const [error, setError] = useState(false);
   if (error || !src) {
