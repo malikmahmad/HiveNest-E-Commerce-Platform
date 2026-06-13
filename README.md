@@ -590,8 +590,6 @@ npm run db:seed
 [![Instagram](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/priv_ahmad007/)
 [![Facebook](https://img.shields.io/badge/Facebook-1877F2?style=for-the-badge&logo=facebook&logoColor=white)](https://www.facebook.com/profile.php?id=100086022546117)
 
-📞 **+92 326 2770290**
-
 </div>
 
 ---
