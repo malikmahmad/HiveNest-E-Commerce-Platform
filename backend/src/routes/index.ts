@@ -42,6 +42,7 @@ const localUpload = multer({
 });
 
 const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10, message: 'Too many attempts' });
+const forgotPasswordLimiter = rateLimit({ windowMs: 60 * 60 * 1000, max: 5, message: 'Too many password reset attempts' });
 const searchLimiter = rateLimit({ windowMs: 60 * 1000, max: 30 });
 
 const authRouter = Router();
@@ -51,7 +52,7 @@ authRouter.post('/google', authLimiter, auth.googleLogin);
 authRouter.post('/refresh', auth.refreshToken);
 authRouter.post('/logout', protect, auth.logout);
 authRouter.get('/verify-email', auth.verifyEmail);
-authRouter.post('/forgot-password', authLimiter, validate(forgotPasswordSchema), auth.forgotPassword);
+authRouter.post('/forgot-password', forgotPasswordLimiter, validate(forgotPasswordSchema), auth.forgotPassword);
 authRouter.post('/reset-password', authLimiter, validate(resetPasswordSchema), auth.resetPassword);
 authRouter.get('/me', protect, auth.getMe);
 authRouter.patch('/me', protect, auth.updateProfile);

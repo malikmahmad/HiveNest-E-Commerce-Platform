@@ -178,21 +178,30 @@ export const forgotPassword = async (req: Request, res: Response) => {
   const { email } = req.body;
   const user = await prisma.user.findUnique({ where: { email } });
 
+  // Always return same message for security (don't reveal if email exists)
   if (!user) {
     return ApiResponse.success(res, null, 'If that email exists, a reset link has been sent');
   }
 
   const resetToken = crypto.randomBytes(32).toString('hex');
-  const resetExp = new Date(Date.now() + 60 * 60 * 1000);
+  const resetExp = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
 
   await prisma.user.update({
     where: { id: user.id },
     data: { resetPasswordToken: resetToken, resetPasswordExp: resetExp },
   });
 
-  sendPasswordResetEmail(email, user.name, resetToken).catch((err) => {
+  try {
+    await sendPasswordResetEmail(email, user.name, resetToken);
+    logger.info(`Password reset email sent to ${email}`);
+  } catch (err: any) {
     logger.error(`Forgot password email failed for ${email}: ${err?.message}`);
-  });
+    // In dev mode — return the actual error so you can debug
+    if (!config.isProd) {
+      return ApiResponse.error(res, `Email send failed: ${err?.message}`, 500);
+    }
+  }
+
   ApiResponse.success(res, null, 'If that email exists, a reset link has been sent');
 };
 
