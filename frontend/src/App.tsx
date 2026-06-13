@@ -9,7 +9,6 @@ import AdminLayout from './components/layout/AdminLayout';
 import LoadingSpinner from './components/ui/LoadingSpinner';
 import { authAPI } from './services/api';
 
-// ─── LAZY PAGES ───────────────────────────────────────────────
 const HomePage        = lazy(() => import('./pages/HomePage'));
 const ProductsPage    = lazy(() => import('./pages/ProductsPage'));
 const ProductDetail   = lazy(() => import('./pages/ProductDetail'));
@@ -28,7 +27,6 @@ const ResetPassword   = lazy(() => import('./pages/ResetPassword'));
 const VerifyEmail     = lazy(() => import('./pages/VerifyEmail'));
 const NotFound        = lazy(() => import('./pages/NotFound'));
 
-// Admin pages
 const AdminDashboard  = lazy(() => import('./pages/admin/Dashboard'));
 const AdminProducts   = lazy(() => import('./pages/admin/Products'));
 const AdminOrders     = lazy(() => import('./pages/admin/Orders'));
@@ -48,7 +46,6 @@ const queryClient = new QueryClient({
   },
 });
 
-// ─── GUARDS ───────────────────────────────────────────────────
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuthStore();
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
@@ -57,8 +54,7 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 const AdminRoute = ({ children }: { children: React.ReactNode }) => {
   const { user, isAuthenticated } = useAuthStore();
   if (!isAuthenticated) return <Navigate to="/login" replace />;
-  if (!['ADMIN', 'SUPER_ADMIN'].includes(user?.role || ''))
-    return <Navigate to="/" replace />;
+  if (!['ADMIN', 'SUPER_ADMIN'].includes(user?.role || '')) return <Navigate to="/" replace />;
   return <>{children}</>;
 };
 
@@ -70,18 +66,12 @@ const GuestRoute = ({ children }: { children: React.ReactNode }) => {
 export default function App() {
   const { isAuthenticated, setAuth } = useAuthStore();
 
-  // On app load, refresh user data from server to get latest role
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
     if (isAuthenticated && token) {
       authAPI.getMe()
-        .then(({ data }) => {
-          const user = data.data;
-          setAuth(user, token);
-        })
-        .catch(() => {
-          // token expired — clearAuth handled by axios interceptor
-        });
+        .then(({ data }) => { setAuth(data.data, token); })
+        .catch(() => {});
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -92,7 +82,6 @@ export default function App() {
         <BrowserRouter>
           <Suspense fallback={<LoadingSpinner fullScreen />}>
             <Routes>
-              {/* Public Routes */}
               <Route element={<Layout />}>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/products" element={<ProductsPage />} />
@@ -102,24 +91,17 @@ export default function App() {
                 <Route path="/blog/:slug" element={<BlogDetail />} />
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/wishlist" element={<WishlistPage />} />
-
-                {/* Auth */}
                 <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
                 <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
                 <Route path="/forgot-password" element={<GuestRoute><ForgotPassword /></GuestRoute>} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/verify-email" element={<VerifyEmail />} />
-
-                {/* Protected */}
                 <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
                 <Route path="/orders" element={<ProtectedRoute><OrdersPage /></ProtectedRoute>} />
                 <Route path="/orders/:id" element={<ProtectedRoute><OrderDetail /></ProtectedRoute>} />
                 <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
-
                 <Route path="*" element={<NotFound />} />
               </Route>
-
-              {/* Admin Routes */}
               <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
                 <Route index element={<AdminDashboard />} />
                 <Route path="products" element={<AdminProducts />} />

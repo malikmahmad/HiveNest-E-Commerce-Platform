@@ -7,17 +7,12 @@ export interface AuthRequest extends Request {
   user?: JwtPayload & { id: string };
 }
 
-export const protect = async (
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction
-) => {
+export const protect = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const authHeader = req.headers.authorization;
-    const token =
-      authHeader?.startsWith('Bearer ')
-        ? authHeader.split(' ')[1]
-        : req.cookies?.accessToken;
+    const token = authHeader?.startsWith('Bearer ')
+      ? authHeader.split(' ')[1]
+      : req.cookies?.accessToken;
 
     if (!token) throw new AppError('Not authenticated. Please login.', 401);
 
@@ -28,8 +23,7 @@ export const protect = async (
       select: { id: true, email: true, role: true, isActive: true },
     });
 
-    if (!user || !user.isActive)
-      throw new AppError('User not found or deactivated.', 401);
+    if (!user || !user.isActive) throw new AppError('User not found or deactivated.', 401);
 
     req.user = { ...decoded, id: user.id };
     next();
@@ -48,11 +42,7 @@ export const restrictTo = (...roles: string[]) => {
   };
 };
 
-export const optionalAuth = async (
-  req: AuthRequest,
-  res: Response,
-  next: NextFunction
-) => {
+export const optionalAuth = async (req: AuthRequest, res: Response, next: NextFunction) => {
   try {
     const authHeader = req.headers.authorization;
     const token = authHeader?.startsWith('Bearer ')
@@ -64,7 +54,7 @@ export const optionalAuth = async (
       req.user = { ...decoded, id: decoded.userId };
     }
   } catch {
-    // silent - optional auth
+    // silent
   }
   next();
 };

@@ -38,18 +38,8 @@ export default function ProductCard({ product, className = '' }: Props) {
   const { openAuthModal } = useUIStore();
 
   const rawImage = product.images?.[0]?.url;
-  // Skip wsrv.nl proxy for local URLs (localhost or relative /uploads paths)
-  const isLocalUrl = rawImage && (
-    rawImage.includes('localhost') ||
-    rawImage.includes('127.0.0.1') ||
-    rawImage.startsWith('/uploads') ||
-    rawImage.startsWith('/')
-  );
-  const primaryImage = rawImage
-    ? isLocalUrl
-      ? rawImage  // use directly — Vite proxies /uploads to backend
-      : `https://wsrv.nl/?url=${encodeURIComponent(rawImage)}&w=400&h=400&fit=cover&output=jpg`
-    : null;
+  // Use image URL directly — works for Unsplash, Cloudinary, and local /uploads (proxied by Vite)
+  const primaryImage = rawImage || null;
 
   const catKey = getCategoryKey(product.category?.name);
   const catStyle = CATEGORY_STYLES[catKey] || CATEGORY_STYLES.default;

@@ -7,10 +7,7 @@ cloudinary.config({
   api_secret: config.cloudinary.apiSecret,
 });
 
-export const uploadImage = async (
-  filePath: string,
-  folder = 'hivenest/products'
-): Promise<{ url: string; publicId: string }> => {
+export const uploadImage = async (filePath: string, folder = 'hivenest/products'): Promise<{ url: string; publicId: string }> => {
   const result = await cloudinary.uploader.upload(filePath, {
     folder,
     transformation: [{ quality: 'auto', fetch_format: 'auto' }],
@@ -22,10 +19,7 @@ export const deleteImage = async (publicId: string): Promise<void> => {
   await cloudinary.uploader.destroy(publicId);
 };
 
-export const uploadMultiple = async (
-  files: string[],
-  folder = 'hivenest/products'
-) => {
+export const uploadMultiple = async (files: string[], folder = 'hivenest/products') => {
   return Promise.all(files.map(f => uploadImage(f, folder)));
 };
 

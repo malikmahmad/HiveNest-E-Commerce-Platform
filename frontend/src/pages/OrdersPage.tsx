@@ -1,4 +1,3 @@
-// ─── OrdersPage.tsx ───────────────────────────────────────────
 import { Link } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Package, ChevronRight, Clock } from 'lucide-react';

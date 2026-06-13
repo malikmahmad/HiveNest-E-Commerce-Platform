@@ -1,6 +1,5 @@
 import { z } from 'zod';
 
-// ─── AUTH ─────────────────────────────────────────────────────
 export const registerSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters').max(50),
   email: z.string().email('Invalid email address'),
@@ -30,7 +29,6 @@ export const changePasswordSchema = z.object({
   newPassword: z.string().min(8).regex(/[A-Z]/).regex(/[0-9]/),
 });
 
-// ─── ADDRESS ─────────────────────────────────────────────────
 export const addressSchema = z.object({
   name: z.string().min(2).max(50),
   phone: z.string().min(10).max(15),
@@ -42,7 +40,6 @@ export const addressSchema = z.object({
   isDefault: z.boolean().optional(),
 });
 
-// ─── PRODUCT ─────────────────────────────────────────────────
 export const productSchema = z.object({
   categoryId: z.string().cuid(),
   subCategoryId: z.string().cuid().optional(),
@@ -67,14 +64,12 @@ export const productSchema = z.object({
   stock: z.number().int().min(0).default(0),
 });
 
-// ─── CART ─────────────────────────────────────────────────────
 export const cartItemSchema = z.object({
   productId: z.string().cuid(),
   variantId: z.string().cuid().optional(),
   quantity: z.number().int().min(1).max(100),
 });
 
-// ─── ORDER ───────────────────────────────────────────────────
 export const orderSchema = z.object({
   addressId: z.string().cuid(),
   paymentMethod: z.enum(['STRIPE', 'JAZZCASH', 'EASYPAISA', 'COD']),
@@ -82,7 +77,6 @@ export const orderSchema = z.object({
   notes: z.string().max(500).optional(),
 });
 
-// ─── REVIEW ──────────────────────────────────────────────────
 export const reviewSchema = z.object({
   productId: z.string().cuid(),
   rating: z.number().int().min(1).max(5),
@@ -90,7 +84,6 @@ export const reviewSchema = z.object({
   comment: z.string().max(1000).optional(),
 });
 
-// ─── COUPON ──────────────────────────────────────────────────
 export const couponSchema = z.object({
   code: z.string().min(3).max(20).toUpperCase(),
   description: z.string().optional(),
@@ -103,7 +96,6 @@ export const couponSchema = z.object({
   expiresAt: z.string().datetime().optional(),
 });
 
-// ─── BLOG ────────────────────────────────────────────────────
 export const blogSchema = z.object({
   categoryId: z.string().cuid(),
   title: z.string().min(5).max(200),
@@ -116,7 +108,6 @@ export const blogSchema = z.object({
   isPublished: z.boolean().default(true),
 });
 
-// ─── CATEGORY ────────────────────────────────────────────────
 export const categorySchema = z.object({
   name: z.string().min(2).max(100),
   description: z.string().optional(),
@@ -124,4 +115,8 @@ export const categorySchema = z.object({
   icon: z.string().optional(),
   isActive: z.boolean().default(true),
   sortOrder: z.number().int().default(0),
+});
+
+export const newsletterSubscribeSchema = z.object({
+  email: z.string().email('Please enter a valid email address'),
 });

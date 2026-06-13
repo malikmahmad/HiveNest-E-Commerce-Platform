@@ -6,18 +6,17 @@ import { motion } from 'framer-motion';
 import { useBlogs, useBlogCategories } from '../hooks';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 
-// Reliable image component using wsrv.nl proxy
+// Simple image component with fallback
 function BlogImage({ src, alt, className }: { src?: string; alt: string; className?: string }) {
   const [error, setError] = useState(false);
-  const proxied = src ? `https://wsrv.nl/?url=${encodeURIComponent(src)}&w=600&h=340&fit=cover&output=jpg` : null;
-  if (!proxied || error) {
+  if (!src || error) {
     return (
       <div className={`w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5 ${className}`}>
         <span className="text-4xl">📖</span>
       </div>
     );
   }
-  return <img src={proxied} alt={alt} className={className} onError={() => setError(true)} loading="lazy" />;
+  return <img src={src} alt={alt} className={className} onError={() => setError(true)} loading="lazy" />;
 }
 
 export default function BlogPage() {

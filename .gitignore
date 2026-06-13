@@ -10,3 +10,13 @@ backend/logs/
 backend/prisma/dev.db
 backend/prisma/dev.db-journal
 backend/uploads/
+
+# Build outputs
+backend/dist/
+frontend/dist/
+
+# Deployment configs (not needed for local run)
+vercel.json
+netlify.toml
+render.yaml
+fly.toml

@@ -1,12 +1,11 @@
-import { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { useState } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { useMutation } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { authAPI } from '../services/api';
-import { Loader2, CheckCircle, XCircle, Eye, EyeOff } from 'lucide-react';
+import { Loader2, Eye, EyeOff } from 'lucide-react';
 
-// ─── Reset Password ───────────────────────────────────────────
 export function ResetPassword() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
@@ -27,8 +26,14 @@ export function ResetPassword() {
       <div className="min-h-[70vh] flex items-center justify-center px-4">
         <div className="w-full max-w-md bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
           <h1 className="text-xl font-bold text-gray-900 mb-2 text-center">Set New Password</h1>
-          <form onSubmit={(e) => { e.preventDefault(); if (form.password !== form.confirm) { toast.error('Passwords don\'t match'); return; } mutation.mutate(); }} className="space-y-5 mt-6">
-            {/* New Password */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              if (form.password !== form.confirm) { toast.error("Passwords don't match"); return; }
+              mutation.mutate();
+            }}
+            className="space-y-5 mt-6"
+          >
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">New Password</label>
               <div className="relative">
@@ -45,7 +50,6 @@ export function ResetPassword() {
                 </button>
               </div>
             </div>
-            {/* Confirm Password */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Confirm Password</label>
               <div className="relative">
@@ -62,7 +66,11 @@ export function ResetPassword() {
                 </button>
               </div>
             </div>
-            <button type="submit" disabled={mutation.isPending} className="w-full bg-primary text-white py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-primary-dark transition-colors disabled:opacity-60">
+            <button
+              type="submit"
+              disabled={mutation.isPending}
+              className="w-full bg-primary text-white py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-primary-dark transition-colors disabled:opacity-60"
+            >
               {mutation.isPending ? <><Loader2 size={16} className="animate-spin" /> Resetting...</> : 'Reset Password'}
             </button>
           </form>
@@ -71,4 +79,5 @@ export function ResetPassword() {
     </>
   );
 }
+
 export default ResetPassword;

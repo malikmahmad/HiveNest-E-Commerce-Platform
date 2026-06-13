@@ -8,14 +8,12 @@ export const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-// Request interceptor - attach access token
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('accessToken');
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
-// Response interceptor - auto refresh on 401
 let isRefreshing = false;
 let failedQueue: Array<{ resolve: (v: string) => void; reject: (e: unknown) => void }> = [];
 
@@ -58,8 +56,6 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-// ─── API SERVICES ─────────────────────────────────────────────
 
 export const authAPI = {
   register: (data: object) => api.post('/auth/register', data),
@@ -126,7 +122,6 @@ export const adminAPI = {
   createCategory: (data: object) => api.post('/admin/categories', data),
   updateCategory: (id: string, data: object) => api.patch(`/admin/categories/${id}`, data),
   deleteCategory: (id: string) => api.delete(`/admin/categories/${id}`),
-  // Products
   createProduct: (data: object) => api.post('/products', data),
   updateProduct: (id: string, data: object) => api.patch(`/products/${id}`, data),
   deleteProduct: (id: string) => api.delete(`/products/${id}`),

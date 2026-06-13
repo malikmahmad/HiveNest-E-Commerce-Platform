@@ -1,17 +1,8 @@
 import { Response } from 'express';
 
 export class ApiResponse {
-  static success<T>(
-    res: Response,
-    data: T,
-    message = 'Success',
-    statusCode = 200
-  ) {
-    return res.status(statusCode).json({
-      success: true,
-      message,
-      data,
-    });
+  static success<T>(res: Response, data: T, message = 'Success', statusCode = 200) {
+    return res.status(statusCode).json({ success: true, message, data });
   }
 
   static created<T>(res: Response, data: T, message = 'Created successfully') {
@@ -19,21 +10,10 @@ export class ApiResponse {
   }
 
   static error(res: Response, message: string, statusCode = 400, errors?: unknown) {
-    return res.status(statusCode).json({
-      success: false,
-      message,
-      errors: errors || null,
-    });
+    return res.status(statusCode).json({ success: false, message, errors: errors || null });
   }
 
-  static paginated<T>(
-    res: Response,
-    data: T[],
-    total: number,
-    page: number,
-    limit: number,
-    message = 'Success'
-  ) {
+  static paginated<T>(res: Response, data: T[], total: number, page: number, limit: number, message = 'Success') {
     return res.status(200).json({
       success: true,
       message,

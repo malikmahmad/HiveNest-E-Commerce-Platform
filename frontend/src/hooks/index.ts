@@ -1,10 +1,9 @@
-import { useQuery, useMutation, useQueryClient, useInfiniteQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
 import { authAPI, cartAPI, wishlistAPI, productAPI, orderAPI, reviewAPI, couponAPI, blogAPI } from '../services/api';
 import { useAuthStore, useCartStore, useWishlistStore } from '../store';
 import type { ProductFilters } from '../types';
 
-// ─── AUTH HOOKS ───────────────────────────────────────────────
 export const useAuth = () => {
   const { user, isAuthenticated, setAuth, clearAuth, updateUser } = useAuthStore();
   const queryClient = useQueryClient();
@@ -15,7 +14,7 @@ export const useAuth = () => {
       setAuth(data.data.user, data.data.accessToken);
       queryClient.invalidateQueries({ queryKey: ['cart'] });
       queryClient.invalidateQueries({ queryKey: ['wishlist'] });
-      toast.success(`Welcome back, ${data.data.user.name}! 🎉`);
+      toast.success(`Welcome back, ${data.data.user.name}!`);
     },
     onError: (err: any) => toast.error(err.response?.data?.message || 'Login failed'),
   });
@@ -23,11 +22,10 @@ export const useAuth = () => {
   const registerMutation = useMutation({
     mutationFn: (data: { name: string; email: string; password: string }) => authAPI.register(data),
     onSuccess: ({ data }: any) => {
-      // If auto-verified (no SMTP), set auth immediately
       if (data?.data?.accessToken) {
         setAuth(data.data.user, data.data.accessToken);
       }
-      toast.success('Account created! Welcome to HiveNest 🎉');
+      toast.success('Account created! Welcome to HiveNest');
     },
     onError: (err: any) => toast.error(err.response?.data?.message || 'Registration failed'),
   });
@@ -68,7 +66,6 @@ export const useAuth = () => {
   };
 };
 
-// ─── CART HOOKS ───────────────────────────────────────────────
 export const useCart = () => {
   const { isAuthenticated } = useAuthStore();
   const { setCart, items, subtotal, count, openCart } = useCartStore();
@@ -117,7 +114,6 @@ export const useCart = () => {
   };
 };
 
-// ─── WISHLIST HOOKS ───────────────────────────────────────────
 export const useWishlist = () => {
   const { isAuthenticated } = useAuthStore();
   const { items, setWishlist, toggle, isWishlisted } = useWishlistStore();
@@ -143,7 +139,6 @@ export const useWishlist = () => {
   return { items, isWishlisted, toggleWishlist: toggleMutation.mutate, count: items.length };
 };
 
-// ─── PRODUCT HOOKS ────────────────────────────────────────────
 export const useProducts = (filters: ProductFilters = {}) => {
   return useQuery({
     queryKey: ['products', filters],
@@ -179,7 +174,6 @@ export const useSearch = (query: string) => {
   });
 };
 
-// ─── ORDER HOOKS ──────────────────────────────────────────────
 export const useOrders = (params?: object) => {
   return useQuery({
     queryKey: ['orders', params],
@@ -205,7 +199,7 @@ export const useCreateOrder = () => {
       queryClient.invalidateQueries({ queryKey: ['orders'] });
       queryClient.invalidateQueries({ queryKey: ['cart'] });
       clear();
-      toast.success('Order placed successfully! 🎉');
+      toast.success('Order placed successfully!');
       return data.data;
     },
     onError: (err: any) => toast.error(err.response?.data?.message || 'Order failed'),
@@ -224,7 +218,6 @@ export const useCancelOrder = () => {
   });
 };
 
-// ─── REVIEW HOOKS ─────────────────────────────────────────────
 export const useReviews = (productId: string, page = 1) => {
   return useQuery({
     queryKey: ['reviews', productId, page],
@@ -246,7 +239,6 @@ export const useAddReview = () => {
   });
 };
 
-// ─── COUPON HOOK ──────────────────────────────────────────────
 export const useValidateCoupon = () => {
   return useMutation({
     mutationFn: ({ code, subtotal }: { code: string; subtotal: number }) =>
@@ -256,7 +248,6 @@ export const useValidateCoupon = () => {
   });
 };
 
-// ─── BLOG HOOKS ───────────────────────────────────────────────
 export const useBlogs = (params?: object) => {
   return useQuery({
     queryKey: ['blogs', params],

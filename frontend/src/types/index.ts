@@ -1,4 +1,3 @@
-// ─── PRODUCT ─────────────────────────────────────────────────
 export interface ProductImage {
   id: string;
   url: string;
@@ -93,7 +92,6 @@ export interface ProductCard {
   category: { name: string; slug: string };
 }
 
-// ─── CART ─────────────────────────────────────────────────────
 export interface CartItemType {
   id: string;
   productId: string;
@@ -103,7 +101,6 @@ export interface CartItemType {
   variant?: ProductVariant;
 }
 
-// ─── ORDER ───────────────────────────────────────────────────
 export type OrderStatus = 'PENDING' | 'PROCESSING' | 'SHIPPED' | 'DELIVERED' | 'CANCELLED' | 'REFUNDED';
 export type PaymentStatus = 'PENDING' | 'PAID' | 'FAILED' | 'REFUNDED';
 export type PaymentMethod = 'STRIPE' | 'JAZZCASH' | 'EASYPAISA' | 'COD';
@@ -141,7 +138,6 @@ export interface Order {
   payment?: Payment;
 }
 
-// ─── ADDRESS ─────────────────────────────────────────────────
 export interface Address {
   id: string;
   name: string;
@@ -154,7 +150,6 @@ export interface Address {
   isDefault: boolean;
 }
 
-// ─── REVIEW ──────────────────────────────────────────────────
 export interface Review {
   id: string;
   rating: number;
@@ -165,7 +160,6 @@ export interface Review {
   user: { name: string; avatar?: string };
 }
 
-// ─── PAYMENT ─────────────────────────────────────────────────
 export interface Payment {
   id: string;
   amount: number;
@@ -175,7 +169,6 @@ export interface Payment {
   paidAt?: string;
 }
 
-// ─── BLOG ────────────────────────────────────────────────────
 export interface BlogCategory {
   id: string;
   name: string;
@@ -197,7 +190,6 @@ export interface Blog {
   category: BlogCategory;
 }
 
-// ─── PAGINATION ──────────────────────────────────────────────
 export interface PaginationMeta {
   total: number;
   page: number;
@@ -219,7 +211,6 @@ export interface ApiResponse<T> {
   data: T;
 }
 
-// ─── FILTERS ─────────────────────────────────────────────────
 export interface ProductFilters {
   page?: number;
   limit?: number;

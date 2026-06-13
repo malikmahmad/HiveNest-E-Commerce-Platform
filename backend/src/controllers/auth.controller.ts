@@ -6,10 +6,7 @@ import prisma from '../config/prisma';
 import { config } from '../config';
 import { ApiResponse, AppError } from '../utils/apiResponse';
 import { generateTokenPair, verifyRefreshToken } from '../utils/jwt';
-import {
-  sendVerificationEmail,
-  sendPasswordResetEmail,
-} from '../utils/email';
+import { sendVerificationEmail, sendPasswordResetEmail } from '../utils/email';
 import { AuthRequest } from '../middleware/auth';
 
 const googleClient = new OAuth2Client(config.google.clientId);
@@ -20,7 +17,6 @@ const COOKIE_OPTS = {
   sameSite: 'strict' as const,
 };
 
-// ─── REGISTER ────────────────────────────────────────────────
 export const register = async (req: Request, res: Response, next: NextFunction) => {
   const { name, email, password } = req.body;
 
@@ -29,7 +25,6 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
 
   const hashedPassword = await bcrypt.hash(password, 12);
   const emailVerifyToken = crypto.randomBytes(32).toString('hex');
-
   const smtpConfigured = config.smtp.user && config.smtp.user !== 'your_email@gmail.com';
 
   const user = await prisma.user.create({
@@ -43,12 +38,10 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
     select: { id: true, name: true, email: true, role: true, avatar: true },
   });
 
-  // Send welcome/verification email (non-blocking)
   if (smtpConfigured) {
     sendVerificationEmail(email, name, emailVerifyToken).catch(() => {});
     ApiResponse.created(res, { user }, 'Account created! Please check your email to verify your account.');
   } else {
-    // Dev mode: auto-verified — return token so frontend can auto-login
     const payload = { userId: user.id, email: user.email, role: user.role };
     const { accessToken, refreshToken } = generateTokenPair(payload);
     await prisma.user.update({
@@ -56,18 +49,15 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
       data: { refreshToken: await bcrypt.hash(refreshToken, 10) },
     });
     res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: config.isProd, sameSite: 'strict', maxAge: 7 * 24 * 60 * 60 * 1000 });
-    ApiResponse.created(res, { user, accessToken }, 'Account created successfully! Welcome to HiveNest 🎉');
+    ApiResponse.created(res, { user, accessToken }, 'Account created successfully! Welcome to HiveNest');
   }
 };
 
-// ─── VERIFY EMAIL ────────────────────────────────────────────
 export const verifyEmail = async (req: Request, res: Response) => {
   const { token } = req.query;
   if (!token) throw new AppError('Token required', 400);
 
-  const user = await prisma.user.findFirst({
-    where: { emailVerifyToken: token as string },
-  });
+  const user = await prisma.user.findFirst({ where: { emailVerifyToken: token as string } });
   if (!user) throw new AppError('Invalid or expired token', 400);
 
   await prisma.user.update({
@@ -78,7 +68,6 @@ export const verifyEmail = async (req: Request, res: Response) => {
   ApiResponse.success(res, null, 'Email verified successfully');
 };
 
-// ─── LOGIN ───────────────────────────────────────────────────
 export const login = async (req: Request, res: Response) => {
   const { email, password } = req.body;
 
@@ -89,7 +78,6 @@ export const login = async (req: Request, res: Response) => {
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) throw new AppError('Invalid credentials', 401);
 
-  // Only block login if SMTP is configured and email not verified
   const smtpConfigured = config.smtp.user && config.smtp.user !== 'your_email@gmail.com';
   if (smtpConfigured && !user.isEmailVerified) {
     throw new AppError('Please verify your email before logging in. Check your inbox.', 403);
@@ -111,35 +99,22 @@ export const login = async (req: Request, res: Response) => {
   });
 };
 
-// ─── GOOGLE LOGIN ────────────────────────────────────────────
 export const googleLogin = async (req: Request, res: Response) => {
   const { credential } = req.body;
   if (!credential) throw new AppError('Google credential required', 400);
 
-  const ticket = await googleClient.verifyIdToken({
-    idToken: credential,
-    audience: config.google.clientId,
-  });
+  const ticket = await googleClient.verifyIdToken({ idToken: credential, audience: config.google.clientId });
   const payload = ticket.getPayload();
   if (!payload) throw new AppError('Invalid Google token', 400);
 
   const { sub: googleId, email, name, picture } = payload;
   if (!email || !name) throw new AppError('Google account missing info', 400);
 
-  let user = await prisma.user.findFirst({
-    where: { OR: [{ googleId }, { email }] },
-  });
+  let user = await prisma.user.findFirst({ where: { OR: [{ googleId }, { email }] } });
 
   if (!user) {
     user = await prisma.user.create({
-      data: {
-        googleId,
-        email,
-        name,
-        avatar: picture,
-        isEmailVerified: true,
-        role: 'USER',
-      },
+      data: { googleId, email, name, avatar: picture, isEmailVerified: true, role: 'USER' },
     });
   } else if (!user.googleId) {
     user = await prisma.user.update({
@@ -164,7 +139,6 @@ export const googleLogin = async (req: Request, res: Response) => {
   });
 };
 
-// ─── REFRESH TOKEN ───────────────────────────────────────────
 export const refreshToken = async (req: Request, res: Response) => {
   const token = req.cookies?.refreshToken;
   if (!token) throw new AppError('Refresh token missing', 401);
@@ -186,55 +160,42 @@ export const refreshToken = async (req: Request, res: Response) => {
   });
 
   res.cookie('refreshToken', newRefreshToken, { ...COOKIE_OPTS, maxAge: 7 * 24 * 60 * 60 * 1000 });
-
   ApiResponse.success(res, { accessToken });
 };
 
-// ─── LOGOUT ──────────────────────────────────────────────────
 export const logout = async (req: AuthRequest, res: Response) => {
   if (req.user) {
-    await prisma.user.update({
-      where: { id: req.user.userId },
-      data: { refreshToken: null },
-    });
+    await prisma.user.update({ where: { id: req.user.userId }, data: { refreshToken: null } });
   }
   res.clearCookie('refreshToken');
   ApiResponse.success(res, null, 'Logged out successfully');
 };
 
-// ─── FORGOT PASSWORD ─────────────────────────────────────────
 export const forgotPassword = async (req: Request, res: Response) => {
   const { email } = req.body;
   const user = await prisma.user.findUnique({ where: { email } });
 
-  // Always return success to prevent email enumeration
   if (!user) {
     return ApiResponse.success(res, null, 'If that email exists, a reset link has been sent');
   }
 
   const resetToken = crypto.randomBytes(32).toString('hex');
-  const resetExp = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+  const resetExp = new Date(Date.now() + 60 * 60 * 1000);
 
   await prisma.user.update({
     where: { id: user.id },
     data: { resetPasswordToken: resetToken, resetPasswordExp: resetExp },
   });
 
-  // Non-blocking email send
   sendPasswordResetEmail(email, user.name, resetToken).catch(() => {});
-
   ApiResponse.success(res, null, 'If that email exists, a reset link has been sent');
 };
 
-// ─── RESET PASSWORD ──────────────────────────────────────────
 export const resetPassword = async (req: Request, res: Response) => {
   const { token, password } = req.body;
 
   const user = await prisma.user.findFirst({
-    where: {
-      resetPasswordToken: token,
-      resetPasswordExp: { gt: new Date() },
-    },
+    where: { resetPasswordToken: token, resetPasswordExp: { gt: new Date() } },
   });
 
   if (!user) throw new AppError('Invalid or expired reset token', 400);
@@ -250,7 +211,6 @@ export const resetPassword = async (req: Request, res: Response) => {
   ApiResponse.success(res, null, 'Password reset successfully. Please login.');
 };
 
-// ─── GET ME ──────────────────────────────────────────────────
 export const getMe = async (req: AuthRequest, res: Response) => {
   const user = await prisma.user.findUnique({
     where: { id: req.user!.userId },
@@ -264,7 +224,6 @@ export const getMe = async (req: AuthRequest, res: Response) => {
   ApiResponse.success(res, user);
 };
 
-// ─── UPDATE PROFILE ──────────────────────────────────────────
 export const updateProfile = async (req: AuthRequest, res: Response) => {
   const { name, phone } = req.body;
   const user = await prisma.user.update({
@@ -275,7 +234,6 @@ export const updateProfile = async (req: AuthRequest, res: Response) => {
   ApiResponse.success(res, user, 'Profile updated');
 };
 
-// ─── ADD ADDRESS ─────────────────────────────────────────────
 export const addAddress = async (req: AuthRequest, res: Response) => {
   const { name, phone, street, city, state, zip, country } = req.body;
   if (!name || !phone || !street || !city || !state || !zip) {
@@ -284,12 +242,7 @@ export const addAddress = async (req: AuthRequest, res: Response) => {
   const address = await prisma.address.create({
     data: {
       userId: req.user!.userId,
-      name,
-      phone,
-      street,
-      city,
-      state,
-      zip,
+      name, phone, street, city, state, zip,
       country: country || 'Pakistan',
     },
   });

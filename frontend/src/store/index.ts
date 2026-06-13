@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-// ─── TYPES ────────────────────────────────────────────────────
 export interface User {
   id: string;
   name: string;
@@ -44,7 +43,6 @@ export interface WishlistItem {
   };
 }
 
-// ─── AUTH STORE ───────────────────────────────────────────────
 interface AuthState {
   user: User | null;
   accessToken: string | null;
@@ -75,7 +73,6 @@ export const useAuthStore = create<AuthState>()(
   )
 );
 
-// ─── CART STORE ───────────────────────────────────────────────
 interface CartState {
   items: CartItem[];
   isOpen: boolean;
@@ -101,7 +98,6 @@ export const useCartStore = create<CartState>()((set) => ({
   clear: () => set({ items: [], subtotal: 0, count: 0 }),
 }));
 
-// ─── WISHLIST STORE ───────────────────────────────────────────
 interface WishlistState {
   items: WishlistItem[];
   productIds: Set<string>;
@@ -130,7 +126,6 @@ export const useWishlistStore = create<WishlistState>()((set, get) => ({
   isWishlisted: (productId) => get().productIds.has(productId),
 }));
 
-// ─── UI STORE ─────────────────────────────────────────────────
 interface UIState {
   isSearchOpen: boolean;
   isMobileMenuOpen: boolean;

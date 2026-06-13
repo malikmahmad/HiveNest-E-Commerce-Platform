@@ -5,22 +5,21 @@ import { Calendar, Eye, ChevronRight, ArrowLeft } from 'lucide-react';
 import { useBlog } from '../hooks';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
 
-function proxyImage(url?: string, w = 800, h = 400) {
+function proxyImage(url?: string) {
   if (!url) return null;
-  return `https://wsrv.nl/?url=${encodeURIComponent(url)}&w=${w}&h=${h}&fit=cover&output=jpg`;
+  return url;
 }
 
 function BlogFeaturedImage({ src, alt }: { src: string; alt: string }) {
   const [error, setError] = useState(false);
-  const proxied = proxyImage(src, 800, 450);
-  if (error || !proxied) {
+  if (error || !src) {
     return (
       <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/10 to-primary/5 min-h-48">
         <span className="text-6xl">📖</span>
       </div>
     );
   }
-  return <img src={proxied} alt={alt} className="w-full h-full object-cover" onError={() => setError(true)} />;
+  return <img src={src} alt={alt} className="w-full h-full object-cover" onError={() => setError(true)} />;
 }
 
 export default function BlogDetail() {
@@ -95,7 +94,7 @@ export default function BlogDetail() {
                   {post.image && (
                     <div className="aspect-video overflow-hidden bg-gray-100">
                       <img
-                        src={`https://wsrv.nl/?url=${encodeURIComponent(post.image)}&w=400&h=225&fit=cover&output=jpg`}
+                        src={post.image}
                         alt={post.title}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         onError={(e) => { (e.target as HTMLImageElement).style.display='none'; }}

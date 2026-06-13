@@ -1,4 +1,3 @@
-// AdminLayout.tsx
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { LayoutDashboard, Package, ShoppingCart, Users, Tag, BookOpen, Percent, Boxes, LogOut, Menu, X, ArrowLeft, Store } from 'lucide-react';
 import { useState } from 'react';

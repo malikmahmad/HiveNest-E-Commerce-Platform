@@ -4,7 +4,6 @@ import prisma from '../config/prisma';
 import { ApiResponse, AppError } from '../utils/apiResponse';
 import { AuthRequest } from '../middleware/auth';
 
-// ─── DASHBOARD ANALYTICS ─────────────────────────────────────
 export const getDashboard = async (req: Request, res: Response) => {
   const now = new Date();
   const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -63,7 +62,6 @@ export const getDashboard = async (req: Request, res: Response) => {
   });
 };
 
-// ─── ORDERS MANAGEMENT ───────────────────────────────────────
 export const adminGetOrders = async (req: Request, res: Response) => {
   const { page = '1', limit = '20', status, search } = req.query;
   const pageNum = parseInt(page as string);
@@ -82,11 +80,7 @@ export const adminGetOrders = async (req: Request, res: Response) => {
   const [orders, total] = await Promise.all([
     prisma.order.findMany({
       where,
-      include: {
-        user: { select: { name: true, email: true } },
-        items: { take: 2 },
-        payment: true,
-      },
+      include: { user: { select: { name: true, email: true } }, items: { take: 2 }, payment: true },
       orderBy: { createdAt: 'desc' },
       skip: (pageNum - 1) * limitNum,
       take: limitNum,
@@ -108,13 +102,9 @@ export const adminUpdateOrder = async (req: Request, res: Response) => {
   }
   if (paymentStatus !== undefined) {
     data.paymentStatus = paymentStatus;
-    // Also update the related Payment record
     await prisma.payment.updateMany({
       where: { orderId: id },
-      data: {
-        status: paymentStatus,
-        ...(paymentStatus === 'PAID' ? { paidAt: new Date() } : {}),
-      },
+      data: { status: paymentStatus, ...(paymentStatus === 'PAID' ? { paidAt: new Date() } : {}) },
     });
   }
   if (trackingNumber !== undefined) data.trackingNumber = trackingNumber;
@@ -123,7 +113,6 @@ export const adminUpdateOrder = async (req: Request, res: Response) => {
   ApiResponse.success(res, order, 'Order updated');
 };
 
-// ─── USERS MANAGEMENT ────────────────────────────────────────
 export const adminGetUsers = async (req: Request, res: Response) => {
   const { page = '1', limit = '20', search, role } = req.query;
   const pageNum = parseInt(page as string);
@@ -167,13 +156,9 @@ export const adminUpdateUser = async (req: Request, res: Response) => {
   ApiResponse.success(res, user, 'User updated');
 };
 
-// ─── CATEGORY MANAGEMENT ─────────────────────────────────────
 export const adminGetCategories = async (req: Request, res: Response) => {
   const categories = await prisma.category.findMany({
-    include: {
-      subCategories: true,
-      _count: { select: { products: true } },
-    },
+    include: { subCategories: true, _count: { select: { products: true } } },
     orderBy: { sortOrder: 'asc' },
   });
   ApiResponse.success(res, categories);
@@ -200,7 +185,6 @@ export const adminDeleteCategory = async (req: Request, res: Response) => {
   ApiResponse.success(res, null, 'Category deleted');
 };
 
-// ─── COUPON MANAGEMENT ───────────────────────────────────────
 export const adminGetCoupons = async (req: Request, res: Response) => {
   const coupons = await prisma.coupon.findMany({ orderBy: { createdAt: 'desc' } });
   ApiResponse.success(res, coupons);
@@ -221,7 +205,6 @@ export const adminDeleteCoupon = async (req: Request, res: Response) => {
   ApiResponse.success(res, null, 'Coupon deleted');
 };
 
-// ─── BLOG MANAGEMENT ─────────────────────────────────────────
 export const adminGetBlogs = async (req: Request, res: Response) => {
   const { page = '1', limit = '20' } = req.query;
   const pageNum = parseInt(page as string);
@@ -258,7 +241,6 @@ export const adminDeleteBlog = async (req: Request, res: Response) => {
   ApiResponse.success(res, null, 'Blog deleted');
 };
 
-// ─── INVENTORY MANAGEMENT ────────────────────────────────────
 export const adminGetInventory = async (req: Request, res: Response) => {
   const inventory = await prisma.inventory.findMany({
     include: {

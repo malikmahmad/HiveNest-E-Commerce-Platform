@@ -4,10 +4,6 @@ import { ApiResponse, AppError } from '../utils/apiResponse';
 import { AuthRequest } from '../middleware/auth';
 import { sendOrderConfirmationEmail } from '../utils/email';
 
-// ══════════════════════════════════════════════════════════════
-// CART CONTROLLER
-// ══════════════════════════════════════════════════════════════
-
 export const getCart = async (req: AuthRequest, res: Response) => {
   const items = await prisma.cartItem.findMany({
     where: { userId: req.user!.userId },
@@ -22,11 +18,7 @@ export const getCart = async (req: AuthRequest, res: Response) => {
     },
   });
 
-  const subtotal = items.reduce(
-    (sum, item) => sum + Number(item.product.price) * item.quantity,
-    0
-  );
-
+  const subtotal = items.reduce((sum, item) => sum + Number(item.product.price) * item.quantity, 0);
   ApiResponse.success(res, { items, subtotal, count: items.length });
 };
 
@@ -42,13 +34,8 @@ export const addToCart = async (req: AuthRequest, res: Response) => {
   const stock = product.inventory?.stock ?? 0;
   if (stock < quantity) throw new AppError(`Only ${stock} items in stock`, 400);
 
-  // SQLite NULL unique constraint workaround — upsert fails with null variantId
   const existing = await prisma.cartItem.findFirst({
-    where: {
-      userId: req.user!.userId,
-      productId,
-      variantId: variantId ?? null,
-    },
+    where: { userId: req.user!.userId, productId, variantId: variantId ?? null },
   });
 
   let item;
@@ -60,12 +47,7 @@ export const addToCart = async (req: AuthRequest, res: Response) => {
     });
   } else {
     item = await prisma.cartItem.create({
-      data: {
-        userId: req.user!.userId,
-        productId,
-        variantId: variantId ?? null,
-        quantity,
-      },
+      data: { userId: req.user!.userId, productId, variantId: variantId ?? null, quantity },
       include: { product: { include: { images: { where: { isPrimary: true }, take: 1 } } } },
     });
   }
@@ -82,16 +64,12 @@ export const updateCartItem = async (req: AuthRequest, res: Response) => {
     return ApiResponse.success(res, null, 'Item removed');
   }
 
-  const item = await prisma.cartItem.update({
-    where: { id, userId: req.user!.userId },
-    data: { quantity },
-  });
+  const item = await prisma.cartItem.update({ where: { id, userId: req.user!.userId }, data: { quantity } });
   ApiResponse.success(res, item, 'Cart updated');
 };
 
 export const removeFromCart = async (req: AuthRequest, res: Response) => {
-  const { id } = req.params;
-  await prisma.cartItem.delete({ where: { id, userId: req.user!.userId } });
+  await prisma.cartItem.delete({ where: { id: req.params.id, userId: req.user!.userId } });
   ApiResponse.success(res, null, 'Removed from cart');
 };
 
@@ -99,10 +77,6 @@ export const clearCart = async (req: AuthRequest, res: Response) => {
   await prisma.cartItem.deleteMany({ where: { userId: req.user!.userId } });
   ApiResponse.success(res, null, 'Cart cleared');
 };
-
-// ══════════════════════════════════════════════════════════════
-// WISHLIST CONTROLLER
-// ══════════════════════════════════════════════════════════════
 
 export const getWishlist = async (req: AuthRequest, res: Response) => {
   const items = await prisma.wishlist.findMany({
@@ -137,36 +111,23 @@ export const toggleWishlist = async (req: AuthRequest, res: Response) => {
   ApiResponse.success(res, { wishlisted: true }, 'Added to wishlist');
 };
 
-// ══════════════════════════════════════════════════════════════
-// ORDER CONTROLLER
-// ══════════════════════════════════════════════════════════════
-
 export const createOrder = async (req: AuthRequest, res: Response) => {
   const { addressId, paymentMethod, couponCode, notes } = req.body;
   const userId = req.user!.userId;
 
-  // Get cart
   const cartItems = await prisma.cartItem.findMany({
     where: { userId },
-    include: {
-      product: { include: { inventory: true } },
-      variant: true,
-    },
+    include: { product: { include: { inventory: true } }, variant: true },
   });
 
   if (!cartItems.length) throw new AppError('Cart is empty', 400);
 
-  // Verify address
   const address = await prisma.address.findFirst({ where: { id: addressId, userId } });
   if (!address) throw new AppError('Address not found', 404);
 
-  // Calculate totals
-  let subtotal = cartItems.reduce(
-    (sum, item) => sum + Number(item.product.price) * item.quantity, 0
-  );
+  let subtotal = cartItems.reduce((sum, item) => sum + Number(item.product.price) * item.quantity, 0);
   let discount = 0;
 
-  // Apply coupon
   if (couponCode) {
     const coupon = await prisma.coupon.findFirst({
       where: { code: couponCode, isActive: true, expiresAt: { gt: new Date() } },
@@ -185,10 +146,8 @@ export const createOrder = async (req: AuthRequest, res: Response) => {
   const shipping = subtotal > 100 ? 0 : 5;
   const tax = (subtotal - discount) * 0.0;
   const total = subtotal - discount + shipping + tax;
-
   const orderNumber = `HN-${Date.now()}`;
 
-  // Create order in transaction
   const order = await prisma.$transaction(async (tx) => {
     const ord = await tx.order.create({
       data: {
@@ -215,17 +174,12 @@ export const createOrder = async (req: AuthRequest, res: Response) => {
           })),
         },
         payment: {
-          create: {
-            amount: total,
-            method: paymentMethod as any,
-            status: paymentMethod === 'COD' ? 'PENDING' : 'PENDING',
-          },
+          create: { amount: total, method: paymentMethod as any, status: 'PENDING' },
         },
       },
       include: { items: true, address: true },
     });
 
-    // Decrement stock
     for (const item of cartItems) {
       await tx.inventory.update({
         where: { productId: item.productId },
@@ -233,22 +187,16 @@ export const createOrder = async (req: AuthRequest, res: Response) => {
       });
     }
 
-    // Clear cart
     await tx.cartItem.deleteMany({ where: { userId } });
-
     return ord;
   });
 
-  // Send confirmation email
   const user = await prisma.user.findUnique({ where: { id: userId } });
   if (user) {
-    await sendOrderConfirmationEmail(
-      user.email,
-      user.name,
-      order.orderNumber,
-      total,
+    sendOrderConfirmationEmail(
+      user.email, user.name, order.orderNumber, total,
       cartItems.map(i => ({ name: i.product.name, quantity: i.quantity, price: Number(i.product.price) }))
-    ).catch(() => {}); // non-blocking
+    ).catch(() => {});
   }
 
   ApiResponse.created(res, order, 'Order placed successfully');
@@ -262,11 +210,7 @@ export const getOrders = async (req: AuthRequest, res: Response) => {
   const [orders, total] = await Promise.all([
     prisma.order.findMany({
       where: { userId: req.user!.userId },
-      include: {
-        items: { take: 2 },
-        address: true,
-        payment: true,
-      },
+      include: { items: { take: 2 }, address: true, payment: true },
       orderBy: { createdAt: 'desc' },
       skip: (pageNum - 1) * limitNum,
       take: limitNum,
@@ -287,12 +231,9 @@ export const getOrder = async (req: AuthRequest, res: Response) => {
 };
 
 export const cancelOrder = async (req: AuthRequest, res: Response) => {
-  const order = await prisma.order.findFirst({
-    where: { id: req.params.id, userId: req.user!.userId },
-  });
+  const order = await prisma.order.findFirst({ where: { id: req.params.id, userId: req.user!.userId } });
   if (!order) throw new AppError('Order not found', 404);
-  if (!['PENDING', 'PROCESSING'].includes(order.status))
-    throw new AppError('Order cannot be cancelled', 400);
+  if (!['PENDING', 'PROCESSING'].includes(order.status)) throw new AppError('Order cannot be cancelled', 400);
 
   await prisma.order.update({
     where: { id: order.id },
@@ -301,10 +242,6 @@ export const cancelOrder = async (req: AuthRequest, res: Response) => {
 
   ApiResponse.success(res, null, 'Order cancelled');
 };
-
-// ══════════════════════════════════════════════════════════════
-// REVIEW CONTROLLER
-// ══════════════════════════════════════════════════════════════
 
 export const addReview = async (req: AuthRequest, res: Response) => {
   const { productId, rating, title, comment } = req.body;
@@ -356,10 +293,6 @@ export const getProductReviews = async (req: AuthRequest, res: Response) => {
   ApiResponse.paginated(res, reviews, total, pageNum, 10);
 };
 
-// ══════════════════════════════════════════════════════════════
-// COUPON CONTROLLER
-// ══════════════════════════════════════════════════════════════
-
 export const validateCoupon = async (req: AuthRequest, res: Response) => {
   const { code, subtotal } = req.body;
 
@@ -367,13 +300,10 @@ export const validateCoupon = async (req: AuthRequest, res: Response) => {
     where: {
       code: code.toUpperCase(),
       isActive: true,
-      AND: [
-        { OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }] },
-      ],
+      AND: [{ OR: [{ expiresAt: null }, { expiresAt: { gt: new Date() } }] }],
     },
   });
 
-  // Check usage limit in application code (Prisma can't compare two columns directly)
   if (!coupon) throw new AppError('Invalid or expired coupon', 400);
   if (coupon.usageLimit !== null && coupon.usedCount >= coupon.usageLimit)
     throw new AppError('Coupon usage limit reached', 400);

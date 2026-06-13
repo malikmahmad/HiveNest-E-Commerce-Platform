@@ -2,7 +2,6 @@ import nodemailer from 'nodemailer';
 import { config } from '../config';
 import { logger } from './logger';
 
-// Create transporter — uses real SMTP if configured, else Ethereal (free test email)
 let _transporter: nodemailer.Transporter | null = null;
 
 async function getTransporter(): Promise<nodemailer.Transporter> {
@@ -17,9 +16,7 @@ async function getTransporter(): Promise<nodemailer.Transporter> {
       secure: config.smtp.port === 465,
       auth: { user: config.smtp.user, pass: config.smtp.pass },
     });
-    logger.info('📧 Using real SMTP for emails');
   } else {
-    // Auto-create free Ethereal test account
     const testAccount = await nodemailer.createTestAccount();
     _transporter = nodemailer.createTransport({
       host: 'smtp.ethereal.email',
@@ -27,8 +24,7 @@ async function getTransporter(): Promise<nodemailer.Transporter> {
       secure: false,
       auth: { user: testAccount.user, pass: testAccount.pass },
     });
-    logger.info(`📧 Using Ethereal test email: ${testAccount.user}`);
-    logger.info('📧 Preview emails at: https://ethereal.email');
+    logger.info(`Test email: ${testAccount.user} — preview at https://ethereal.email`);
   }
 
   return _transporter;
@@ -55,13 +51,12 @@ const baseTemplate = (content: string) => `
 <body>
   <div class="wrapper">
     <div class="header">
-      <h1>🐝 HiveNest</h1>
+      <h1>HiveNest</h1>
       <p>Premium E-Commerce Store</p>
     </div>
     <div class="body">${content}</div>
     <div class="footer">
       <p>© ${new Date().getFullYear()} HiveNest. All rights reserved.</p>
-      <p>This email was sent to you because you have an account with HiveNest.</p>
     </div>
   </div>
 </body>
@@ -70,26 +65,14 @@ const baseTemplate = (content: string) => `
 export const sendEmail = async (to: string, subject: string, html: string) => {
   try {
     const transport = await getTransporter();
-    const info = await transport.sendMail({
-      from: config.smtp.from,
-      to,
-      subject,
-      html,
-    });
-    logger.info(`✅ Email sent to ${to}: ${subject}`);
-    // Show Ethereal preview URL in console for dev testing
+    const info = await transport.sendMail({ from: config.smtp.from, to, subject, html });
+    logger.info(`Email sent to ${to}: ${subject}`);
     const previewUrl = nodemailer.getTestMessageUrl(info);
     if (previewUrl) {
-      logger.info(`📧 Preview email at: ${previewUrl}`);
-      console.log(`\n📧 ===== EMAIL PREVIEW =====`);
-      console.log(`   To: ${to}`);
-      console.log(`   Subject: ${subject}`);
-      console.log(`   Preview URL: ${previewUrl}`);
-      console.log(`===========================\n`);
+      console.log(`\nEmail Preview — To: ${to} | Subject: ${subject}\nURL: ${previewUrl}\n`);
     }
   } catch (err) {
     logger.error(`Email failed to ${to}:`, err);
-    // Don't throw — email failures should not crash the request
   }
 };
 
@@ -97,19 +80,15 @@ export const sendVerificationEmail = async (to: string, name: string, token: str
   const url = `${config.frontendUrl}/verify-email?token=${token}`;
   await sendEmail(
     to,
-    '🎉 Welcome to HiveNest — Verify Your Email',
+    'Welcome to HiveNest — Verify Your Email',
     baseTemplate(`
-      <h2 style="color:#ff4785;margin-bottom:8px;">Welcome to HiveNest, ${name}! 🎉</h2>
-      <p style="font-size:16px;color:#555;">We're so excited to have you with us! HiveNest is your premium destination for fashion, jewelry, perfume, and lifestyle products.</p>
+      <h2 style="color:#ff4785;margin-bottom:8px;">Welcome to HiveNest, ${name}!</h2>
+      <p>We are excited to have you. Please verify your email to activate your account.</p>
       <div class="divider"></div>
-      <p><strong>One last step</strong> — please verify your email address to unlock your account:</p>
       <div style="text-align:center;margin:28px 0;">
-        <a href="${url}" class="btn">✅ Verify My Email</a>
+        <a href="${url}" class="btn">Verify My Email</a>
       </div>
-      <div style="background:#fff8f9;border-left:4px solid #ff4785;padding:14px 18px;border-radius:0 8px 8px 0;margin:20px 0;">
-        <p style="margin:0;font-size:13px;color:#666;">🛍️ Once verified, you can start shopping, save items to your wishlist, and track your orders.</p>
-      </div>
-      <p style="font-size:13px;color:#999;margin-top:24px;">This link expires in 24 hours. If you didn't create an account, you can safely ignore this email.</p>
+      <p style="font-size:13px;color:#999;margin-top:24px;">This link expires in 24 hours. If you did not create an account, ignore this email.</p>
     `)
   );
 };
@@ -118,20 +97,15 @@ export const sendPasswordResetEmail = async (to: string, name: string, token: st
   const url = `${config.frontendUrl}/reset-password?token=${token}`;
   await sendEmail(
     to,
-    '🔐 Reset Your Password — HiveNest',
+    'Reset Your Password — HiveNest',
     baseTemplate(`
-      <h2 style="color:#ff4785;">Password Reset Request 🔐</h2>
-      <p>Hi <strong>${name}</strong>,</p>
-      <p>We received a request to reset your HiveNest account password. No worries — it happens to the best of us!</p>
+      <h2 style="color:#ff4785;">Password Reset Request</h2>
+      <p>Hi ${name}, click below to reset your HiveNest password.</p>
       <div class="divider"></div>
-      <p>Click the button below to create a new password:</p>
       <div style="text-align:center;margin:28px 0;">
-        <a href="${url}" class="btn">🔑 Reset My Password</a>
+        <a href="${url}" class="btn">Reset My Password</a>
       </div>
-      <div style="background:#fff8f9;border-left:4px solid #ff4785;padding:14px 18px;border-radius:0 8px 8px 0;margin:20px 0;">
-        <p style="margin:0;font-size:13px;color:#666;">⏰ This link expires in <strong>1 hour</strong> for your security.</p>
-      </div>
-      <p style="font-size:13px;color:#999;margin-top:20px;">If you didn't request a password reset, please ignore this email. Your account is safe and no changes were made.</p>
+      <p style="font-size:13px;color:#999;">This link expires in 1 hour. If you did not request this, ignore the email.</p>
     `)
   );
 };
@@ -151,7 +125,7 @@ export const sendOrderConfirmationEmail = async (
     to,
     `Order Confirmed #${orderNumber} - HiveNest`,
     baseTemplate(`
-      <h2>Order Confirmed! ✅</h2>
+      <h2>Order Confirmed!</h2>
       <p>Hi ${name}, your order has been placed successfully.</p>
       <div class="divider"></div>
       <p><strong>Order #${orderNumber}</strong></p>

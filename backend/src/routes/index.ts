@@ -10,18 +10,18 @@ import * as product from '../controllers/product.controller';
 import * as shop from '../controllers/shop.controller';
 import * as admin from '../controllers/admin.controller';
 import * as blog from '../controllers/blog.controller';
+import * as newsletter from '../controllers/newsletter.controller';
 import {
   registerSchema, loginSchema, forgotPasswordSchema,
   resetPasswordSchema, cartItemSchema, orderSchema,
   reviewSchema, couponSchema, categorySchema, blogSchema,
+  newsletterSubscribeSchema,
 } from '../validators/schemas';
 
 const router = Router();
 
-// Multer for temp uploads (Cloudinary)
 const tempUpload = multer({ dest: path.join(process.cwd(), 'tmp', 'uploads') });
 
-// Multer for local uploads — saves to /uploads folder in project root
 const uploadDir = path.join(process.cwd(), 'uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 
@@ -34,18 +34,16 @@ const localStorage = multer.diskStorage({
 });
 const localUpload = multer({
   storage: localStorage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB
+  limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (_req, file, cb) => {
     if (file.mimetype.startsWith('image/')) cb(null, true);
     else cb(new Error('Only image files allowed'));
   },
 });
 
-// Rate limiters
 const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10, message: 'Too many attempts' });
 const searchLimiter = rateLimit({ windowMs: 60 * 1000, max: 30 });
 
-// ─── AUTH ─────────────────────────────────────────────────────
 const authRouter = Router();
 authRouter.post('/register', authLimiter, validate(registerSchema), auth.register);
 authRouter.post('/login', authLimiter, validate(loginSchema), auth.login);
@@ -59,36 +57,28 @@ authRouter.get('/me', protect, auth.getMe);
 authRouter.patch('/me', protect, auth.updateProfile);
 authRouter.post('/me/address', protect, auth.addAddress);
 
-// ─── PRODUCTS ────────────────────────────────────────────────
 const productRouter = Router();
 productRouter.get('/', product.getProducts);
 productRouter.get('/home', product.getHomeData);
 productRouter.get('/search', searchLimiter, product.searchProducts);
 productRouter.get('/:slug', product.getProduct);
-
-// Admin product routes
 productRouter.post('/', protect, restrictTo('ADMIN', 'SUPER_ADMIN'), product.createProduct);
 productRouter.patch('/:id', protect, restrictTo('ADMIN', 'SUPER_ADMIN'), product.updateProduct);
 productRouter.delete('/:id', protect, restrictTo('ADMIN', 'SUPER_ADMIN'), product.deleteProduct);
 productRouter.post('/:id/images', protect, restrictTo('ADMIN', 'SUPER_ADMIN'), tempUpload.array('images', 6), product.uploadProductImages);
 
-// ─── LOCAL IMAGE UPLOAD ───────────────────────────────────────
-// Upload image to local /uploads folder, returns URL
-router.post('/upload/image',
+router.post(
+  '/upload/image',
   protect,
   restrictTo('ADMIN', 'SUPER_ADMIN'),
   localUpload.single('image'),
   (req, res) => {
-    if (!req.file) {
-      return res.status(400).json({ success: false, message: 'No file uploaded' });
-    }
-    // Store as relative path — works in dev (proxied) and prod
+    if (!req.file) return res.status(400).json({ success: false, message: 'No file uploaded' });
     const url = `/uploads/${req.file.filename}`;
     return res.json({ success: true, data: { url } });
   }
 );
 
-// ─── CART ─────────────────────────────────────────────────────
 const cartRouter = Router();
 cartRouter.use(protect);
 cartRouter.get('/', shop.getCart);
@@ -97,13 +87,11 @@ cartRouter.patch('/:id', shop.updateCartItem);
 cartRouter.delete('/:id', shop.removeFromCart);
 cartRouter.delete('/', shop.clearCart);
 
-// ─── WISHLIST ────────────────────────────────────────────────
 const wishlistRouter = Router();
 wishlistRouter.use(protect);
 wishlistRouter.get('/', shop.getWishlist);
 wishlistRouter.post('/toggle', shop.toggleWishlist);
 
-// ─── ORDERS ──────────────────────────────────────────────────
 const orderRouter = Router();
 orderRouter.use(protect);
 orderRouter.get('/', shop.getOrders);
@@ -111,22 +99,18 @@ orderRouter.post('/', validate(orderSchema), shop.createOrder);
 orderRouter.get('/:id', shop.getOrder);
 orderRouter.post('/:id/cancel', shop.cancelOrder);
 
-// ─── REVIEWS ─────────────────────────────────────────────────
 const reviewRouter = Router();
 reviewRouter.get('/:productId', shop.getProductReviews);
 reviewRouter.post('/', protect, validate(reviewSchema), shop.addReview);
 
-// ─── COUPONS ─────────────────────────────────────────────────
 const couponRouter = Router();
 couponRouter.post('/validate', protect, shop.validateCoupon);
 
-// ─── BLOGS ───────────────────────────────────────────────────
 const blogRouter = Router();
 blogRouter.get('/', blog.getBlogs);
 blogRouter.get('/categories', blog.getBlogCategories);
 blogRouter.get('/:slug', blog.getBlog);
 
-// ─── ADMIN ───────────────────────────────────────────────────
 const adminRouter = Router();
 adminRouter.use(protect, restrictTo('ADMIN', 'SUPER_ADMIN'));
 adminRouter.get('/dashboard', admin.getDashboard);
@@ -148,8 +132,14 @@ adminRouter.patch('/blogs/:id', admin.adminUpdateBlog);
 adminRouter.delete('/blogs/:id', admin.adminDeleteBlog);
 adminRouter.get('/inventory', admin.adminGetInventory);
 adminRouter.patch('/inventory/:productId', admin.adminUpdateInventory);
+adminRouter.get('/newsletter', newsletter.adminGetSubscribers);
 
-// Mount
+// ─── Newsletter (public) ──────────────────────────────────────
+const newsletterRouter = Router();
+const newsletterLimiter = rateLimit({ windowMs: 60 * 60 * 1000, max: 5, message: 'Too many subscribe attempts, please try again later.' });
+newsletterRouter.post('/subscribe', newsletterLimiter, validate(newsletterSubscribeSchema), newsletter.subscribe);
+newsletterRouter.get('/unsubscribe', newsletter.unsubscribe);
+
 router.use('/auth', authRouter);
 router.use('/products', productRouter);
 router.use('/cart', cartRouter);
@@ -159,5 +149,6 @@ router.use('/reviews', reviewRouter);
 router.use('/coupons', couponRouter);
 router.use('/blogs', blogRouter);
 router.use('/admin', adminRouter);
+router.use('/newsletter', newsletterRouter);
 
 export default router;

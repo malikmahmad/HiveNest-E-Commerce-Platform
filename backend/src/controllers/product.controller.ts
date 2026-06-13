@@ -5,7 +5,6 @@ import { ApiResponse, AppError } from '../utils/apiResponse';
 import { AuthRequest } from '../middleware/auth';
 import { uploadImage, deleteImage } from '../utils/cloudinary';
 
-// ─── GET PRODUCTS (with filters, pagination, search) ─────────
 export const getProducts = async (req: Request, res: Response) => {
   const {
     page = '1', limit = '12', category, subCategory, brand,
@@ -76,7 +75,6 @@ export const getProducts = async (req: Request, res: Response) => {
   ApiResponse.paginated(res, products, total, pageNum, limitNum);
 };
 
-// ─── GET SINGLE PRODUCT ───────────────────────────────────────
 export const getProduct = async (req: Request, res: Response) => {
   const { slug } = req.params;
 
@@ -98,19 +96,10 @@ export const getProduct = async (req: Request, res: Response) => {
 
   if (!product || !product.isActive) throw new AppError('Product not found', 404);
 
-  // Increment view count
-  await prisma.product.update({
-    where: { id: product.id },
-    data: { viewCount: { increment: 1 } },
-  });
+  await prisma.product.update({ where: { id: product.id }, data: { viewCount: { increment: 1 } } });
 
-  // Related products
   const related = await prisma.product.findMany({
-    where: {
-      categoryId: product.categoryId,
-      id: { not: product.id },
-      isActive: true,
-    },
+    where: { categoryId: product.categoryId, id: { not: product.id }, isActive: true },
     take: 8,
     include: {
       images: { where: { isPrimary: true }, take: 1 },
@@ -121,7 +110,6 @@ export const getProduct = async (req: Request, res: Response) => {
   ApiResponse.success(res, { product, related });
 };
 
-// ─── SEARCH PRODUCTS ─────────────────────────────────────────
 export const searchProducts = async (req: Request, res: Response) => {
   const { q, limit = '8' } = req.query;
   if (!q) return ApiResponse.success(res, []);
@@ -145,10 +133,8 @@ export const searchProducts = async (req: Request, res: Response) => {
   ApiResponse.success(res, products);
 };
 
-// ─── CREATE PRODUCT (Admin) ───────────────────────────────────
 export const createProduct = async (req: AuthRequest, res: Response) => {
   const { stock, imageUrl, ...data } = req.body;
-
   const slug = slugify(data.name, { lower: true, strict: true });
 
   const product = await prisma.product.create({
@@ -158,10 +144,7 @@ export const createProduct = async (req: AuthRequest, res: Response) => {
       price: parseFloat(data.price),
       comparePrice: data.comparePrice ? parseFloat(data.comparePrice) : null,
       inventory: { create: { stock: stock || 0 } },
-      // If an image URL is provided, create a primary image record
-      ...(imageUrl ? {
-        images: { create: { url: imageUrl, isPrimary: true, sortOrder: 0 } },
-      } : {}),
+      ...(imageUrl ? { images: { create: { url: imageUrl, isPrimary: true, sortOrder: 0 } } } : {}),
     },
     include: { inventory: true, images: true },
   });
@@ -169,7 +152,6 @@ export const createProduct = async (req: AuthRequest, res: Response) => {
   ApiResponse.created(res, product);
 };
 
-// ─── UPDATE PRODUCT (Admin) ───────────────────────────────────
 export const updateProduct = async (req: AuthRequest, res: Response) => {
   const { id } = req.params;
   const { stock, imageUrl, ...data } = req.body;
@@ -194,7 +176,6 @@ export const updateProduct = async (req: AuthRequest, res: Response) => {
         update: { stock },
       });
     }
-    // Update primary image if URL provided
     if (imageUrl) {
       const existing = await tx.productImage.findFirst({ where: { productId: id, isPrimary: true } });
       if (existing) {
@@ -209,27 +190,19 @@ export const updateProduct = async (req: AuthRequest, res: Response) => {
   ApiResponse.success(res, updated, 'Product updated');
 };
 
-// ─── DELETE PRODUCT (Admin) ───────────────────────────────────
 export const deleteProduct = async (req: AuthRequest, res: Response) => {
   const { id } = req.params;
-  const product = await prisma.product.findUnique({
-    where: { id },
-    include: { images: true },
-  });
+  const product = await prisma.product.findUnique({ where: { id }, include: { images: true } });
   if (!product) throw new AppError('Product not found', 404);
 
-  // Delete cloudinary images
   await Promise.all(
-    product.images
-      .filter(img => img.publicId)
-      .map(img => deleteImage(img.publicId!))
+    product.images.filter(img => img.publicId).map(img => deleteImage(img.publicId!))
   );
 
   await prisma.product.delete({ where: { id } });
   ApiResponse.success(res, null, 'Product deleted');
 };
 
-// ─── UPLOAD PRODUCT IMAGES ────────────────────────────────────
 export const uploadProductImages = async (req: AuthRequest, res: Response) => {
   const { id } = req.params;
   const files = req.files as Express.Multer.File[];
@@ -257,7 +230,6 @@ export const uploadProductImages = async (req: AuthRequest, res: Response) => {
   ApiResponse.created(res, images, 'Images uploaded');
 };
 
-// ─── HOME PAGE DATA ───────────────────────────────────────────
 export const getHomeData = async (req: Request, res: Response) => {
   const imageInclude = {
     images: { where: { isPrimary: true }, take: 1 },
@@ -265,23 +237,22 @@ export const getHomeData = async (req: Request, res: Response) => {
     category: { select: { name: true, slug: true } },
   };
 
-  const [featured, bestSellers, newArrivals, trending, flashSale, categories] =
-    await Promise.all([
-      prisma.product.findMany({ where: { isActive: true, isFeatured: true }, take: 8, include: imageInclude }),
-      prisma.product.findMany({ where: { isActive: true, isBestSeller: true }, take: 8, include: imageInclude }),
-      prisma.product.findMany({ where: { isActive: true, isNewArrival: true }, take: 8, include: imageInclude, orderBy: { createdAt: 'desc' } }),
-      prisma.product.findMany({ where: { isActive: true, isTrending: true }, take: 8, include: imageInclude }),
-      prisma.product.findMany({
-        where: { isActive: true, isFlashSale: true, flashSaleEnd: { gt: new Date() } },
-        take: 6,
-        include: imageInclude,
-      }),
-      prisma.category.findMany({
-        where: { isActive: true },
-        orderBy: { sortOrder: 'asc' },
-        include: { _count: { select: { products: true } } },
-      }),
-    ]);
+  const [featured, bestSellers, newArrivals, trending, flashSale, categories] = await Promise.all([
+    prisma.product.findMany({ where: { isActive: true, isFeatured: true }, take: 8, include: imageInclude }),
+    prisma.product.findMany({ where: { isActive: true, isBestSeller: true }, take: 8, include: imageInclude }),
+    prisma.product.findMany({ where: { isActive: true, isNewArrival: true }, take: 8, include: imageInclude, orderBy: { createdAt: 'desc' } }),
+    prisma.product.findMany({ where: { isActive: true, isTrending: true }, take: 8, include: imageInclude }),
+    prisma.product.findMany({
+      where: { isActive: true, isFlashSale: true, flashSaleEnd: { gt: new Date() } },
+      take: 6,
+      include: imageInclude,
+    }),
+    prisma.category.findMany({
+      where: { isActive: true },
+      orderBy: { sortOrder: 'asc' },
+      include: { _count: { select: { products: true } } },
+    }),
+  ]);
 
   ApiResponse.success(res, { featured, bestSellers, newArrivals, trending, flashSale, categories });
 };

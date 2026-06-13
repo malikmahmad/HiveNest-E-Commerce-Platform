@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Plus, Trash2, Edit2, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { Plus, Trash2, Edit2, Loader2, Upload, ImageIcon, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { adminAPI } from '../../services/api';
 
@@ -12,6 +12,8 @@ export default function AdminBlogs() {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<string | null>(null);
   const [page, setPage] = useState(1);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { data, isLoading } = useQuery({
     queryKey: ['admin-blogs', page],
@@ -33,6 +35,25 @@ export default function AdminBlogs() {
     mutationFn: (id: string) => adminAPI.deleteBlog(id),
     onSuccess: () => { qc.invalidateQueries({ queryKey: ['admin-blogs'] }); toast.success('Deleted'); },
   });
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const res = await adminAPI.uploadImage(file);
+      setForm((prev: any) => ({ ...prev, image: res.data.data.url }));
+      setImgError(false);
+      toast.success('Image uploaded!');
+    } catch {
+      toast.error('Image upload failed');
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  const [imgError, setImgError] = useState(false);
 
   const blogs = data?.data || [];
   const pagination = data?.pagination;
@@ -83,9 +104,68 @@ export default function AdminBlogs() {
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1.5">Image URL</label>
-                <input type="url" value={form.image} onChange={(e) => setForm({ ...form, image: e.target.value })} placeholder="https://..."
-                  className="w-full px-4 py-2.5 border border-gray-200 rounded-xl text-sm outline-none focus:border-primary" />
+                <label className="block text-sm font-medium text-gray-700 mb-1.5">Blog Image</label>
+                {/* Hidden file input */}
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageUpload}
+                />
+                <div className="flex gap-3 items-start">
+                  <div className="flex-1">
+                    {/* Upload drop zone button */}
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={uploading}
+                      className="w-full border-2 border-dashed border-gray-300 hover:border-primary rounded-xl py-4 flex flex-col items-center gap-2 transition-colors disabled:opacity-50 cursor-pointer hover:bg-primary/5"
+                    >
+                      {uploading ? (
+                        <><Loader2 size={22} className="animate-spin text-primary" /><span className="text-xs text-gray-500">Uploading...</span></>
+                      ) : (
+                        <><Upload size={22} className="text-gray-400" /><span className="text-xs text-gray-500">Click to upload image</span><span className="text-xs text-gray-400">JPG, PNG, WebP — max 5MB</span></>
+                      )}
+                    </button>
+                    {/* URL paste fallback */}
+                    <input
+                      type="text"
+                      value={form.image}
+                      onChange={(e) => { setImgError(false); setForm({ ...form, image: e.target.value }); }}
+                      placeholder="Or paste image URL directly"
+                      className="mt-2 w-full px-3 py-2 border border-gray-200 rounded-lg text-xs outline-none focus:border-primary text-gray-500"
+                    />
+                  </div>
+                  {/* Preview */}
+                  {form.image ? (
+                    <div className="relative flex-shrink-0">
+                      {imgError ? (
+                        <div className="w-24 h-24 bg-gray-100 rounded-xl border border-gray-200 flex flex-col items-center justify-center gap-1">
+                          <ImageIcon size={20} className="text-gray-400" />
+                          <span className="text-[10px] text-gray-400 text-center px-1">Can't preview</span>
+                        </div>
+                      ) : (
+                        <img
+                          key={form.image}
+                          src={form.image}
+                          alt="preview"
+                          className="w-24 h-24 object-cover rounded-xl border border-gray-200"
+                          onError={() => setImgError(true)}
+                        />
+                      )}
+                      <button
+                        type="button"
+                        onClick={() => { setForm({ ...form, image: '' }); setImgError(false); }}
+                        className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600"
+                      ><X size={10} /></button>
+                    </div>
+                  ) : (
+                    <div className="w-24 h-24 flex-shrink-0 bg-gray-100 rounded-xl flex items-center justify-center">
+                      <ImageIcon size={28} className="text-gray-300" />
+                    </div>
+                  )}
+                </div>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1.5">Tags (comma separated)</label>

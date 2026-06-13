@@ -1,6 +1,3 @@
-// HiveNest - Complete Prisma Schema
-// Database: SQLite (local development)
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,32 +7,24 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// ─── NOTE: SQLite does not support enums ─────────────────────
-// Role values: USER | ADMIN | SUPER_ADMIN
-// OrderStatus values: PENDING | PROCESSING | SHIPPED | DELIVERED | CANCELLED | REFUNDED
-// PaymentStatus values: PENDING | PAID | FAILED | REFUNDED
-// PaymentMethod values: STRIPE | JAZZCASH | EASYPAISA | COD
-
-// ─── USERS ───────────────────────────────────────────────────
-
 model User {
-  id                String    @id @default(cuid())
-  email             String    @unique
-  password          String?
-  name              String
-  avatar            String?
-  phone             String?
-  role              String    @default("USER")
-  isEmailVerified   Boolean   @default(false)
-  emailVerifyToken  String?
+  id                 String    @id @default(cuid())
+  email              String    @unique
+  password           String?
+  name               String
+  avatar             String?
+  phone              String?
+  role               String    @default("USER")
+  isEmailVerified    Boolean   @default(false)
+  emailVerifyToken   String?
   resetPasswordToken String?
-  resetPasswordExp  DateTime?
-  googleId          String?   @unique
-  refreshToken      String?
-  lastLogin         DateTime?
-  isActive          Boolean   @default(true)
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
+  resetPasswordExp   DateTime?
+  googleId           String?   @unique
+  refreshToken       String?
+  lastLogin          DateTime?
+  isActive           Boolean   @default(true)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 
   addresses     Address[]
   orders        Order[]
@@ -49,20 +38,18 @@ model User {
   @@map("users")
 }
 
-// ─── ADDRESSES ───────────────────────────────────────────────
-
 model Address {
-  id         String  @id @default(cuid())
-  userId     String
-  name       String
-  phone      String
-  street     String
-  city       String
-  state      String
-  zip        String
-  country    String  @default("Pakistan")
-  isDefault  Boolean @default(false)
-  createdAt  DateTime @default(now())
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  phone     String
+  street    String
+  city      String
+  state     String
+  zip       String
+  country   String   @default("Pakistan")
+  isDefault Boolean  @default(false)
+  createdAt DateTime @default(now())
 
   user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   orders Order[]
@@ -70,8 +57,6 @@ model Address {
   @@index([userId])
   @@map("addresses")
 }
-
-// ─── CATEGORIES ──────────────────────────────────────────────
 
 model Category {
   id          String   @id @default(cuid())
@@ -112,42 +97,40 @@ model SubCategory {
   @@map("sub_categories")
 }
 
-// ─── PRODUCTS ────────────────────────────────────────────────
-
 model Product {
-  id            String   @id @default(cuid())
+  id            String    @id @default(cuid())
   categoryId    String
   subCategoryId String?
   name          String
-  slug          String   @unique
+  slug          String    @unique
   description   String
   shortDesc     String?
-  sku           String   @unique
+  sku           String    @unique
   brand         String?
   price         Decimal
   comparePrice  Decimal?
   costPrice     Decimal?
-  discount      Int      @default(0)
+  discount      Int       @default(0)
   weight        Float?
-  isActive      Boolean  @default(true)
-  isFeatured    Boolean  @default(false)
-  isNewArrival  Boolean  @default(false)
-  isBestSeller  Boolean  @default(false)
-  isTrending    Boolean  @default(false)
-  isFlashSale   Boolean  @default(false)
+  isActive      Boolean   @default(true)
+  isFeatured    Boolean   @default(false)
+  isNewArrival  Boolean   @default(false)
+  isBestSeller  Boolean   @default(false)
+  isTrending    Boolean   @default(false)
+  isFlashSale   Boolean   @default(false)
   flashSaleEnd  DateTime?
   metaTitle     String?
   metaDesc      String?
   tags          String?
-  totalReviews  Int      @default(0)
-  avgRating     Float    @default(0)
-  totalSold     Int      @default(0)
-  viewCount     Int      @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  totalReviews  Int       @default(0)
+  avgRating     Float     @default(0)
+  totalSold     Int       @default(0)
+  viewCount     Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
 
-  category    Category     @relation(fields: [categoryId], references: [id])
-  subCategory SubCategory? @relation(fields: [subCategoryId], references: [id])
+  category    Category       @relation(fields: [categoryId], references: [id])
+  subCategory SubCategory?   @relation(fields: [subCategoryId], references: [id])
   images      ProductImage[]
   variants    ProductVariant[]
   inventory   Inventory?
@@ -198,18 +181,16 @@ model ProductVariant {
 }
 
 model Inventory {
-  id          String   @id @default(cuid())
-  productId   String   @unique
-  stock       Int      @default(0)
-  lowStock    Int      @default(5)
-  updatedAt   DateTime @updatedAt
+  id        String   @id @default(cuid())
+  productId String   @unique
+  stock     Int      @default(0)
+  lowStock  Int      @default(5)
+  updatedAt DateTime @updatedAt
 
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@map("inventory")
 }
-
-// ─── CART ────────────────────────────────────────────────────
 
 model CartItem {
   id        String   @id @default(cuid())
@@ -229,8 +210,6 @@ model CartItem {
   @@map("cart_items")
 }
 
-// ─── WISHLIST ────────────────────────────────────────────────
-
 model Wishlist {
   id        String   @id @default(cuid())
   userId    String
@@ -245,29 +224,27 @@ model Wishlist {
   @@map("wishlists")
 }
 
-// ─── ORDERS ──────────────────────────────────────────────────
-
 model Order {
-  id              String        @id @default(cuid())
-  userId          String
-  addressId       String
-  orderNumber     String        @unique
-  status          String        @default("PENDING")
-  paymentStatus   String        @default("PENDING")
-  paymentMethod   String        @default("COD")
-  subtotal        Decimal
-  discount        Decimal       @default(0)
-  shipping        Decimal       @default(0)
-  tax             Decimal       @default(0)
-  total           Decimal
-  couponCode      String?
-  notes           String?
-  trackingNumber  String?
-  deliveredAt     DateTime?
-  cancelledAt     DateTime?
-  cancelReason    String?
-  createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  id             String    @id @default(cuid())
+  userId         String
+  addressId      String
+  orderNumber    String    @unique
+  status         String    @default("PENDING")
+  paymentStatus  String    @default("PENDING")
+  paymentMethod  String    @default("COD")
+  subtotal       Decimal
+  discount       Decimal   @default(0)
+  shipping       Decimal   @default(0)
+  tax            Decimal   @default(0)
+  total          Decimal
+  couponCode     String?
+  notes          String?
+  trackingNumber String?
+  deliveredAt    DateTime?
+  cancelledAt    DateTime?
+  cancelReason   String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 
   user    User        @relation(fields: [userId], references: [id])
   address Address     @relation(fields: [addressId], references: [id])
@@ -281,15 +258,15 @@ model Order {
 }
 
 model OrderItem {
-  id         String  @id @default(cuid())
-  orderId    String
-  productId  String
-  name       String
-  image      String?
-  price      Decimal
-  quantity   Int
-  total      Decimal
-  variant    String?
+  id        String  @id @default(cuid())
+  orderId   String
+  productId String
+  name      String
+  image     String?
+  price     Decimal
+  quantity  Int
+  total     Decimal
+  variant   String?
 
   order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id])
@@ -298,26 +275,22 @@ model OrderItem {
   @@map("order_items")
 }
 
-// ─── PAYMENTS ────────────────────────────────────────────────
-
 model Payment {
-  id              String        @id @default(cuid())
-  orderId         String        @unique
+  id              String    @id @default(cuid())
+  orderId         String    @unique
   amount          Decimal
-  currency        String        @default("PKR")
+  currency        String    @default("PKR")
   method          String
-  status          String        @default("PENDING")
+  status          String    @default("PENDING")
   transactionId   String?
   gatewayResponse String?
   paidAt          DateTime?
-  createdAt       DateTime      @default(now())
+  createdAt       DateTime  @default(now())
 
   order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
 
   @@map("payments")
 }
-
-// ─── REVIEWS ─────────────────────────────────────────────────
 
 model Review {
   id         String   @id @default(cuid())
@@ -338,27 +311,23 @@ model Review {
   @@map("reviews")
 }
 
-// ─── COUPONS ─────────────────────────────────────────────────
-
 model Coupon {
-  id           String    @id @default(cuid())
-  code         String    @unique
-  description  String?
-  type         String    @default("PERCENTAGE")
-  value        Decimal
-  minOrder     Decimal?
-  maxDiscount  Decimal?
-  usageLimit   Int?
-  usedCount    Int       @default(0)
-  isActive     Boolean   @default(true)
-  expiresAt    DateTime?
-  createdAt    DateTime  @default(now())
+  id          String    @id @default(cuid())
+  code        String    @unique
+  description String?
+  type        String    @default("PERCENTAGE")
+  value       Decimal
+  minOrder    Decimal?
+  maxDiscount Decimal?
+  usageLimit  Int?
+  usedCount   Int       @default(0)
+  isActive    Boolean   @default(true)
+  expiresAt   DateTime?
+  createdAt   DateTime  @default(now())
 
   @@index([code])
   @@map("coupons")
 }
-
-// ─── BLOG ────────────────────────────────────────────────────
 
 model BlogCategory {
   id        String   @id @default(cuid())
@@ -396,8 +365,6 @@ model Blog {
   @@map("blogs")
 }
 
-// ─── NOTIFICATIONS ───────────────────────────────────────────
-
 model Notification {
   id        String   @id @default(cuid())
   userId    String
@@ -412,4 +379,15 @@ model Notification {
 
   @@index([userId, isRead])
   @@map("notifications")
+}
+
+model NewsletterSubscriber {
+  id          String    @id @default(cuid())
+  email       String    @unique
+  isActive    Boolean   @default(true)
+  unsubToken  String    @unique @default(cuid())
+  subscribedAt DateTime @default(now())
+
+  @@index([email])
+  @@map("newsletter_subscribers")
 }

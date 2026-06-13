@@ -10,7 +10,7 @@ import LoadingSpinner from '../components/ui/LoadingSpinner';
 const HERO_SLIDES = [
   {
     title: 'Discover Premium Fashion',
-    subtitle: 'New Collection 2024',
+    subtitle: 'New Collection 2026',
     description: 'Explore our curated collection of premium clothing, jewelry, and accessories.',
     cta: 'Shop Now',
     href: '/products',
@@ -104,7 +104,6 @@ function SectionHeader({ title, subtitle, href }: { title: string; subtitle?: st
   );
 }
 
-// ─── RIGHT SIDEBAR ────────────────────────────────────────────
 function RightSidebar() {
   const { data: blogData } = useBlogs({ limit: 4 } as any);
   const blogs = blogData?.data?.slice(0, 4) || [];
@@ -124,18 +123,15 @@ function RightSidebar() {
                 to={`/category/${cat.slug}`}
                 className="flex items-center gap-3 px-5 py-3.5 hover:bg-primary/5 transition-colors group"
               >
-                {/* Icon bubble */}
                 <div className={`w-10 h-10 ${cat.bg} border ${cat.border} rounded-xl flex items-center justify-center flex-shrink-0`}>
                   <span className="text-xl">{cat.emoji}</span>
                 </div>
-                {/* Name + count */}
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-gray-700 group-hover:text-primary transition-colors">
                     {cat.name}
                   </p>
                   <p className="text-xs text-gray-400">{cat.count} products</p>
                 </div>
-                {/* Plus icon */}
                 <Plus size={16} className="text-gray-300 group-hover:text-primary transition-colors flex-shrink-0" />
               </Link>
             </li>
@@ -165,11 +161,10 @@ function RightSidebar() {
               to={`/blog/${blog.slug}`}
               className="flex gap-3 px-5 py-4 hover:bg-primary/5 transition-colors group"
             >
-              {/* Blog thumb */}
               <div className="w-16 h-14 rounded-xl overflow-hidden flex-shrink-0 bg-gray-100">
                 {blog.image ? (
                   <img
-                    src={`https://wsrv.nl/?url=${encodeURIComponent(blog.image)}&w=120&h=100&fit=cover&output=jpg`}
+                    src={blog.image}
                     alt={blog.title}
                     className="w-full h-full object-cover"
                     onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
@@ -178,7 +173,6 @@ function RightSidebar() {
                   <div className="w-full h-full flex items-center justify-center text-xl">📖</div>
                 )}
               </div>
-              {/* Blog info */}
               <div className="flex-1 min-w-0">
                 <p className="text-xs font-medium text-primary mb-0.5">{blog.category?.name}</p>
                 <h4 className="text-xs font-semibold text-gray-800 line-clamp-2 leading-snug group-hover:text-primary transition-colors">
@@ -200,7 +194,6 @@ function RightSidebar() {
   );
 }
 
-// ─── MAIN PAGE ────────────────────────────────────────────────
 export default function HomePage() {
   const { data, isLoading } = useHomeData();
   const [slide, setSlide] = useState(0);
@@ -276,14 +269,12 @@ export default function HomePage() {
       <div className="max-w-7xl mx-auto px-4 py-10">
         <div className="flex gap-7 items-start">
 
-          {/* LEFT: Sidebar (hidden on mobile) */}
           <div className="hidden lg:block">
             <div className="sticky top-24">
               <RightSidebar />
             </div>
           </div>
 
-          {/* RIGHT: Main content */}
           <div className="flex-1 min-w-0 space-y-14">
 
             {/* Flash Sale */}

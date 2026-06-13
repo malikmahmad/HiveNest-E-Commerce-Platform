@@ -5,9 +5,8 @@ import slugify from 'slugify';
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log('🌱 Seeding HiveNest database...');
+  console.log('Seeding HiveNest database...');
 
-  // ─── ADMIN USER ──────────────────────────────────────────────
   const adminPass = await bcrypt.hash('Admin@1234', 12);
   await prisma.user.upsert({
     where: { email: 'admin@hivenest.com' },
@@ -21,7 +20,6 @@ async function main() {
     update: {},
   });
 
-  // ─── CATEGORIES ──────────────────────────────────────────────
   const categories = [
     { name: 'Clothes', icon: 'shirt', sortOrder: 1 },
     { name: 'Footwear', icon: 'shoe', sortOrder: 2 },
@@ -43,7 +41,6 @@ async function main() {
     categoryMap[cat.name] = c.id;
   }
 
-  // ─── SUBCATEGORIES ───────────────────────────────────────────
   const subCategories = [
     { category: 'Clothes', name: 'Dress & Frock', sortOrder: 1 },
     { category: 'Clothes', name: 'Winter Wear', sortOrder: 2 },
@@ -74,7 +71,6 @@ async function main() {
     subCategoryMap[sub.name] = s.id;
   }
 
-  // ─── PRODUCTS ────────────────────────────────────────────────
   const products = [
     { name: "Men's Hoodies T-Shirt", category: 'Clothes', subCategory: 'T-Shirts', brand: 'HiveStyle', price: 7, comparePrice: 17, sku: 'HS-001', stock: 45, isFeatured: true, isNewArrival: true, isBestSeller: false, isTrending: true, desc: "Premium quality men's hoodie t-shirt with comfortable fit. Perfect for casual wear.", img: 'https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=400&q=80', rating: 4.5 },
     { name: "Girls T-Shirt", category: 'Clothes', subCategory: 'T-Shirts', brand: 'HiveFashion', price: 3, comparePrice: 5, sku: 'HS-002', stock: 60, isFeatured: true, isNewArrival: true, desc: "Stylish girls t-shirt available in multiple colors. Soft cotton fabric.", img: 'https://images.unsplash.com/photo-1503944515243-e7a4a4c1caec?w=400&q=80', rating: 4.5 },
@@ -115,13 +111,13 @@ async function main() {
         price: p.price,
         comparePrice: p.comparePrice,
         categoryId: categoryMap[p.category],
-        subCategoryId: p.subCategory ? subCategoryMap[p.subCategory] : undefined,
-        isFeatured: p.isFeatured ?? false,
-        isNewArrival: p.isNewArrival ?? false,
-        isBestSeller: p.isBestSeller ?? false,
-        isTrending: p.isTrending ?? false,
-        isFlashSale: p.isFlashSale ?? false,
-        flashSaleEnd: p.flashSaleEnd ?? null,
+        subCategoryId: (p as any).subCategory ? subCategoryMap[(p as any).subCategory] : undefined,
+        isFeatured: (p as any).isFeatured ?? false,
+        isNewArrival: (p as any).isNewArrival ?? false,
+        isBestSeller: (p as any).isBestSeller ?? false,
+        isTrending: (p as any).isTrending ?? false,
+        isFlashSale: (p as any).isFlashSale ?? false,
+        flashSaleEnd: (p as any).flashSaleEnd ?? null,
         avgRating: p.rating,
         isActive: true,
         images: { create: [{ url: p.img, isPrimary: true, sortOrder: 0 }] },
@@ -134,11 +130,9 @@ async function main() {
         },
       },
     });
-    // Update product sold count for featured
     await prisma.product.update({ where: { id: prod.id }, data: { totalSold: Math.floor(Math.random() * 200) + 10 } });
   }
 
-  // ─── BLOG CATEGORIES ─────────────────────────────────────────
   const blogCats = ['Fashion', 'Footwear', 'Jewelry', 'Fragrance', 'Beauty', 'Accessories', 'Lifestyle'];
   const blogCatMap: Record<string, string> = {};
   for (const name of blogCats) {
@@ -151,12 +145,11 @@ async function main() {
     blogCatMap[name] = c.id;
   }
 
-  // ─── BLOG POSTS ──────────────────────────────────────────────
   const blogs = [
-    { title: 'Top 10 Best Watches For Men in 2024', category: 'Accessories', excerpt: 'Discover the most stylish and functional watches for men this year.', content: '<h2>Introduction</h2><p>Watches have always been a statement of style and personality for men.</p>', tags: 'watches,men,fashion,accessories', image: 'https://picsum.photos/seed/blog-watches/800/400' },
-    { title: 'Best Perfumes for Women - Complete Guide 2024', category: 'Fragrance', excerpt: 'Find your signature scent from our curated collection of premium perfumes.', content: '<h2>Finding Your Signature Scent</h2><p>Perfume is more than just a fragrance - it is an expression of personality.</p>', tags: 'perfume,fragrance,women,beauty', image: 'https://picsum.photos/seed/blog-perfume/800/400' },
-    { title: 'Winter Fashion Guide - Stay Warm in Style', category: 'Fashion', excerpt: 'Your complete guide to winter fashion trends and must-have pieces.', content: '<h2>Winter 2024 Fashion Trends</h2><p>Winter fashion is all about layering intelligently while maintaining style.</p>', tags: 'winter,fashion,jacket,style', image: 'https://picsum.photos/seed/blog-winter/800/400' },
-    { title: 'Jewelry Trends 2024 - What\'s Hot This Season', category: 'Jewelry', excerpt: 'Explore the latest jewelry trends and find pieces that complement your style.', content: '<h2>2024 Jewelry Trends</h2><p>This season, jewelry is all about making bold statements while maintaining elegance.</p>', tags: 'jewelry,trends,necklace,rings,earrings', image: 'https://picsum.photos/seed/blog-jewelry/800/400' },
+    { title: 'Top 10 Best Watches For Men in 2026', category: 'Accessories', excerpt: 'Discover the most stylish and functional watches for men this year.', content: '<h2>Introduction</h2><p>Watches have always been a statement of style and personality for men.</p>', tags: 'watches,men,fashion,accessories', image: 'https://picsum.photos/seed/blog-watches/800/400' },
+    { title: 'Best Perfumes for Women - Complete Guide 2026', category: 'Fragrance', excerpt: 'Find your signature scent from our curated collection of premium perfumes.', content: '<h2>Finding Your Signature Scent</h2><p>Perfume is more than just a fragrance - it is an expression of personality.</p>', tags: 'perfume,fragrance,women,beauty', image: 'https://picsum.photos/seed/blog-perfume/800/400' },
+    { title: 'Winter Fashion Guide - Stay Warm in Style', category: 'Fashion', excerpt: 'Your complete guide to winter fashion trends and must-have pieces.', content: '<h2>Winter 2026 Fashion Trends</h2><p>Winter fashion is all about layering intelligently while maintaining style.</p>', tags: 'winter,fashion,jacket,style', image: 'https://picsum.photos/seed/blog-winter/800/400' },
+    { title: 'Jewelry Trends 2026 - What\'s Hot This Season', category: 'Jewelry', excerpt: 'Explore the latest jewelry trends and find pieces that complement your style.', content: '<h2>2026 Jewelry Trends</h2><p>This season, jewelry is all about making bold statements while maintaining elegance.</p>', tags: 'jewelry,trends,necklace,rings,earrings', image: 'https://picsum.photos/seed/blog-jewelry/800/400' },
     { title: 'Best T-Shirts Collection - Comfort Meets Style', category: 'Fashion', excerpt: 'Our handpicked collection of premium t-shirts for every style and occasion.', content: '<h2>The Perfect T-Shirt</h2><p>A great t-shirt is the foundation of any wardrobe.</p>', tags: 'tshirts,fashion,casual,style', image: 'https://picsum.photos/seed/blog-tshirt/800/400' },
     { title: 'Complete Footwear Guide - Find Your Perfect Shoes', category: 'Footwear', excerpt: 'Everything you need to know about choosing the right shoes for every occasion.', content: '<h2>Choosing the Right Footwear</h2><p>Your shoes say a lot about you.</p>', tags: 'shoes,footwear,running,formal,casual', image: 'https://picsum.photos/seed/blog-shoes/800/400' },
     { title: 'Skincare & Beauty Essentials for Glowing Skin', category: 'Beauty', excerpt: 'Build your perfect skincare routine with our expert recommended products.', content: '<h2>Building Your Skincare Routine</h2><p>Great skin starts with consistency.</p>', tags: 'beauty,skincare,cosmetics,routine', image: 'https://picsum.photos/seed/blog-beauty/800/400' },
@@ -167,24 +160,17 @@ async function main() {
     await prisma.blog.upsert({
       where: { slug },
       create: {
-        title: b.title,
-        slug,
-        excerpt: b.excerpt,
-        content: b.content,
-        categoryId: blogCatMap[b.category],
-        tags: b.tags,
-        image: b.image,
-        isPublished: true,
+        title: b.title, slug, excerpt: b.excerpt, content: b.content,
+        categoryId: blogCatMap[b.category], tags: b.tags, image: b.image, isPublished: true,
       },
       update: { image: b.image },
     });
   }
 
-  // ─── COUPONS ─────────────────────────────────────────────────
   const coupons = [
-    { code: 'WELCOME10', description: '10% off for new customers', type: 'PERCENTAGE', value: 10, minOrder: 20, expiresAt: new Date('2025-12-31') },
-    { code: 'SAVE20', description: '$20 off orders over $100', type: 'FIXED', value: 20, minOrder: 100, expiresAt: new Date('2025-12-31') },
-    { code: 'FLASH50', description: '50% off flash sale items', type: 'PERCENTAGE', value: 50, minOrder: 30, maxDiscount: 25, expiresAt: new Date('2025-06-30') },
+    { code: 'WELCOME10', description: '10% off for new customers', type: 'PERCENTAGE', value: 10, minOrder: 20, expiresAt: new Date('2027-12-31') },
+    { code: 'SAVE20', description: '$20 off orders over $100', type: 'FIXED', value: 20, minOrder: 100, expiresAt: new Date('2027-12-31') },
+    { code: 'FLASH50', description: '50% off flash sale items', type: 'PERCENTAGE', value: 50, minOrder: 30, maxDiscount: 25, expiresAt: new Date('2027-06-30') },
   ];
 
   for (const c of coupons) {
@@ -195,8 +181,8 @@ async function main() {
     });
   }
 
-  console.log('✅ Database seeded successfully!');
-  console.log('📧 Admin: admin@hivenest.com | 🔑 Password: Admin@1234');
+  console.log('Database seeded successfully!');
+  console.log('Admin: admin@hivenest.com | Password: Admin@1234');
 }
 
 main()
