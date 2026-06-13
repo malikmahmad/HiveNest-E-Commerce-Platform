@@ -1,127 +1,338 @@
-# 🛍️ HiveNest — Full-Stack E-Commerce Platform
+<div align="center">
 
-A modern, full-featured e-commerce web application built with **React**, **Node.js/Express**, **Prisma ORM**, and **SQLite**.
+<!-- Animated Banner -->
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:ff4785,50:ff6b9d,100:c0392b&height=220&section=header&text=HiveNest&fontSize=80&fontColor=ffffff&fontAlignY=38&desc=Premium%20Full-Stack%20E-Commerce%20Platform&descAlignY=60&descSize=22&animation=fadeIn" width="100%" />
+
+<!-- Animated Logo Text -->
+<a href="https://github.com/malikmahmad/HiveNest-E-Commerce-Platform">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=28&pause=1000&color=FF4785&center=true&vCenter=true&width=600&lines=🐝+Welcome+to+HiveNest;Full-Stack+E-Commerce+Platform;React+%2B+Node.js+%2B+Prisma;Built+by+Malik+Muhammad+Ahmad" alt="Typing SVG" />
+</a>
+
+<br/>
+
+<!-- Badges Row 1 -->
+<img src="https://img.shields.io/badge/React-19.0-61DAFB?style=for-the-badge&logo=react&logoColor=white&labelColor=20232A" />
+<img src="https://img.shields.io/badge/TypeScript-5.4-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
+<img src="https://img.shields.io/badge/Node.js-20+-339933?style=for-the-badge&logo=node.js&logoColor=white" />
+<img src="https://img.shields.io/badge/Prisma-5.10-2D3748?style=for-the-badge&logo=prisma&logoColor=white" />
+
+<br/>
+
+<!-- Badges Row 2 -->
+<img src="https://img.shields.io/badge/Tailwind_CSS-3.4-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" />
+<img src="https://img.shields.io/badge/Vite-5.2-646CFF?style=for-the-badge&logo=vite&logoColor=white" />
+<img src="https://img.shields.io/badge/SQLite-Database-003B57?style=for-the-badge&logo=sqlite&logoColor=white" />
+<img src="https://img.shields.io/badge/Express.js-4.18-000000?style=for-the-badge&logo=express&logoColor=white" />
+
+<br/><br/>
+
+<!-- Stats Badges -->
+<img src="https://img.shields.io/github/stars/malikmahmad/HiveNest-E-Commerce-Platform?style=for-the-badge&color=ff4785&labelColor=1a1a2e" />
+<img src="https://img.shields.io/github/forks/malikmahmad/HiveNest-E-Commerce-Platform?style=for-the-badge&color=ff6b9d&labelColor=1a1a2e" />
+<img src="https://img.shields.io/github/last-commit/malikmahmad/HiveNest-E-Commerce-Platform?style=for-the-badge&color=c0392b&labelColor=1a1a2e" />
+<img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge&labelColor=1a1a2e" />
+
+<br/><br/>
+
+<!-- Live Demo Button -->
+<a href="http://localhost:5173" target="_blank">
+  <img src="https://img.shields.io/badge/🚀_Live_Demo-FF4785?style=for-the-badge&logoColor=white" height="40"/>
+</a>
+&nbsp;
+<a href="#-local-setup-guide">
+  <img src="https://img.shields.io/badge/⚡_Quick_Start-1a1a2e?style=for-the-badge&logoColor=white" height="40"/>
+</a>
+&nbsp;
+<a href="https://github.com/malikmahmad/HiveNest-E-Commerce-Platform/issues">
+  <img src="https://img.shields.io/badge/🐛_Report_Bug-ff6b9d?style=for-the-badge&logoColor=white" height="40"/>
+</a>
+
+</div>
 
 ---
+
+<!-- 3D Divider -->
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## 📋 Table of Contents
 
-- [Features](#-features)
-- [Tech Stack](#-tech-stack)
-- [Prerequisites](#-prerequisites)
-- [Local Setup Guide](#-local-setup-guide)
-- [Default Admin Account](#-default-admin-account)
-- [Making Someone a Super Admin](#-making-someone-a-super-admin)
-- [Environment Variables Reference](#-environment-variables-reference)
-- [Common Issues](#-common-issues)
+<details open>
+<summary><b>Click to expand</b></summary>
+
+- [✨ Features](#-features)
+- [🧰 Tech Stack](#-tech-stack)
+- [🏗️ Architecture](#%EF%B8%8F-architecture)
+- [📁 Project Structure](#-project-structure)
+- [🖥️ Prerequisites](#%EF%B8%8F-prerequisites)
+- [🚀 Local Setup Guide](#-local-setup-guide)
+- [🔑 Default Admin Account](#-default-admin-account)
+- [👑 Making Someone a Super Admin](#-making-someone-a-super-admin)
+- [🌍 Environment Variables](#-environment-variables)
+- [📡 API Reference](#-api-reference)
+- [🐛 Common Issues](#-common-issues)
+- [👤 Author](#-author)
+
+</details>
 
 ---
+
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## ✨ Features
 
-### Customer Side
-- 🔐 Authentication — Register, Login, Google OAuth, Email Verification
-- 🛒 Shopping Cart — Add, remove, update quantities
-- ❤️ Wishlist — Save favourite products
-- 📦 Checkout — Address management, COD / Card payment
-- 🎟️ Coupons — Discount codes with percentage/fixed amounts
-- 📝 Orders — Track order status (Pending → Shipped → Delivered)
-- ⭐ Reviews — Rate and review products
-- 🔍 Search — Real-time product search
-- 📱 Responsive — Mobile-first design
+<table>
+<tr>
+<td width="50%">
 
-### Admin Panel (`/admin`)
-- 📊 Dashboard — Revenue, orders, users analytics
-- 🛍️ Products — Add, edit, delete with image upload
-- 📋 Orders — Update order status, confirm payment, add tracking number
-- 👥 Users — Manage user roles and status
-- 🏷️ Categories — Create and manage product categories
-- 📝 Blogs — Write and publish blog posts
-- 🎟️ Coupons — Create and manage discount coupons
-- 📦 Inventory — Track and update stock levels
+### 🛒 Customer Experience
+- 🔐 **Auth** — Register, Login, Google OAuth, Email Verification, JWT refresh tokens
+- 🛍️ **Shopping Cart** — Real-time add, remove, quantity update
+- ❤️ **Wishlist** — Save & manage favourite products
+- 📦 **Orders** — Full checkout flow with address management
+- 🎟️ **Coupons** — Percentage & fixed discount codes
+- 📝 **Reviews** — Star ratings with verified purchase badge
+- 🔍 **Search** — Instant product search with filters
+- 📱 **Responsive** — Pixel-perfect mobile-first design
+- 📧 **Newsletter** — Subscribe with branded welcome email
+- 🔔 **Notifications** — In-app notification system
+
+</td>
+<td width="50%">
+
+### ⚙️ Admin Panel `/admin`
+- 📊 **Dashboard** — Revenue charts, growth %, live analytics
+- 🛍️ **Products** — CRUD with local image upload + preview
+- 📋 **Orders** — Status pipeline, payment confirm, tracking
+- 👥 **Users** — Role management, activate/deactivate
+- 🏷️ **Categories** — Hierarchical category & subcategory system
+- 📝 **Blogs** — Rich HTML blog editor with image upload
+- 🎟️ **Coupons** — Create, expire, usage-limit coupons
+- 📦 **Inventory** — Low-stock alerts, stock updates
+- 📧 **Newsletter** — View all subscribers list
+
+</td>
+</tr>
+</table>
 
 ---
+
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## 🧰 Tech Stack
 
-| Layer | Technology |
-|---|---|
-| Frontend | React 19, TypeScript, Vite, Tailwind CSS |
-| State Management | Zustand, TanStack Query |
-| Animations | Framer Motion |
-| Backend | Node.js, Express, TypeScript |
-| ORM | Prisma |
-| Database | SQLite (no installation needed) |
-| Authentication | JWT (Access + Refresh tokens) |
-| Email | Nodemailer (Gmail SMTP) |
-| Image Storage | Local `/uploads` folder |
-| Icons | Lucide React |
+<div align="center">
+
+### Frontend
+| Technology | Version | Purpose |
+|:---:|:---:|:---|
+| <img src="https://skillicons.dev/icons?i=react" width="20"/> React | 19.0 | UI Framework |
+| <img src="https://skillicons.dev/icons?i=ts" width="20"/> TypeScript | 5.4 | Type Safety |
+| <img src="https://skillicons.dev/icons?i=vite" width="20"/> Vite | 5.2 | Build Tool & Dev Server |
+| <img src="https://skillicons.dev/icons?i=tailwind" width="20"/> Tailwind CSS | 3.4 | Utility-first Styling |
+| 🐻 Zustand | 4.5 | Global State Management |
+| 🔄 TanStack Query | 5.28 | Server State & Caching |
+| 🎞️ Framer Motion | 11.1 | Animations |
+| 🪐 React Router | 6.22 | Client-side Routing |
+| 📡 Axios | 1.6 | HTTP Client |
+
+### Backend
+| Technology | Version | Purpose |
+|:---:|:---:|:---|
+| <img src="https://skillicons.dev/icons?i=nodejs" width="20"/> Node.js | 20+ | Runtime |
+| <img src="https://skillicons.dev/icons?i=express" width="20"/> Express | 4.18 | Web Framework |
+| <img src="https://skillicons.dev/icons?i=ts" width="20"/> TypeScript | 5.4 | Type Safety |
+| 🔷 Prisma ORM | 5.10 | Database Toolkit |
+| <img src="https://skillicons.dev/icons?i=sqlite" width="20"/> SQLite | — | Database (zero config) |
+| 🔐 JWT | 9.0 | Auth (Access + Refresh) |
+| 📧 Nodemailer | 6.9 | Email Service |
+| 🛡️ Helmet | 7.1 | Security Headers |
+| 📁 Multer | 1.4 | File Upload |
+| 🪵 Winston | 3.12 | Logging |
+| ✅ Zod | 3.22 | Input Validation |
+
+</div>
 
 ---
 
-## �️ Prerequisites
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
-Install these **once** on the client's laptop:
+## 🏗️ Architecture
 
-1. **Node.js v18+** → https://nodejs.org (download LTS version)
-2. **Git** → https://git-scm.com
-
-To verify installation, open Command Prompt and run:
 ```
-node --version
-npm --version
-git --version
+┌─────────────────────────────────────────────────────────────┐
+│                        BROWSER                              │
+│   React 19 + TypeScript + Vite + Tailwind CSS               │
+│   Zustand (state) │ TanStack Query (cache) │ Framer Motion  │
+└──────────────────────────┬──────────────────────────────────┘
+                           │  HTTP / REST API
+                           │  Axios (JWT Bearer Token)
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│                   EXPRESS.JS API SERVER                     │
+│   Port 5000 │ CORS │ Helmet │ Rate Limiting │ Morgan        │
+│                                                             │
+│   ┌──────────┐ ┌──────────┐ ┌──────────┐ ┌─────────────┐  │
+│   │   Auth   │ │ Products │ │  Orders  │ │  Newsletter │  │
+│   │ /api/v1  │ │ /api/v1  │ │ /api/v1  │ │  /api/v1   │  │
+│   └──────────┘ └──────────┘ └──────────┘ └─────────────┘  │
+│                                                             │
+│   JWT Middleware │ Zod Validation │ Error Handler           │
+└──────────────────────────┬──────────────────────────────────┘
+                           │  Prisma ORM
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│                      SQLite DATABASE                        │
+│   Users │ Products │ Orders │ Cart │ Reviews │ Blogs        │
+│   Categories │ Coupons │ Inventory │ Notifications          │
+│   Newsletter Subscribers │ Payments │ Addresses             │
+└─────────────────────────────────────────────────────────────┘
 ```
-All three should print a version number.
 
 ---
+
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
+
+## 📁 Project Structure
+
+```
+HiveNest-Fullstack/
+│
+├── 📂 backend/
+│   ├── 📂 prisma/
+│   │   ├── 📄 schema.prisma          # 15+ database models
+│   │   ├── 📄 seed.ts                # Sample data seeder
+│   │   └── 📂 migrations/           # DB migration history
+│   │
+│   ├── 📂 src/
+│   │   ├── 📂 config/
+│   │   │   ├── 📄 index.ts           # App config & env vars
+│   │   │   └── 📄 prisma.ts          # Prisma client singleton
+│   │   │
+│   │   ├── 📂 controllers/
+│   │   │   ├── 📄 auth.controller.ts         # Register, login, OAuth
+│   │   │   ├── 📄 product.controller.ts      # Products CRUD
+│   │   │   ├── 📄 shop.controller.ts         # Cart, wishlist, orders
+│   │   │   ├── 📄 admin.controller.ts        # Admin endpoints
+│   │   │   ├── 📄 blog.controller.ts         # Blog posts
+│   │   │   └── 📄 newsletter.controller.ts  # Newsletter subscribe
+│   │   │
+│   │   ├── 📂 middleware/
+│   │   │   ├── 📄 auth.ts            # JWT verify & role guard
+│   │   │   └── 📄 errorHandler.ts   # Global error handler
+│   │   │
+│   │   ├── 📂 routes/
+│   │   │   └── 📄 index.ts           # All API routes
+│   │   │
+│   │   ├── 📂 utils/
+│   │   │   ├── 📄 email.ts           # Nodemailer + templates
+│   │   │   ├── 📄 jwt.ts             # Token helpers
+│   │   │   ├── 📄 apiResponse.ts     # Response helpers
+│   │   │   ├── 📄 cloudinary.ts      # Cloud image upload
+│   │   │   └── 📄 logger.ts          # Winston logger
+│   │   │
+│   │   ├── 📂 validators/
+│   │   │   └── 📄 schemas.ts         # Zod validation schemas
+│   │   │
+│   │   └── 📄 server.ts             # Express entry point
+│   │
+│   ├── 📂 uploads/                  # Local image storage
+│   ├── 📄 .env                      # Backend env variables
+│   ├── 📄 package.json
+│   └── 📄 tsconfig.json
+│
+└── 📂 frontend/
+    ├── 📂 src/
+    │   ├── 📂 components/
+    │   │   ├── 📂 layout/            # Header, Footer, AdminLayout
+    │   │   └── 📂 features/          # Cart, Auth, Search, Products
+    │   │
+    │   ├── 📂 pages/
+    │   │   ├── 📄 HomePage.tsx
+    │   │   ├── 📄 ProductsPage.tsx
+    │   │   ├── 📄 CartPage.tsx
+    │   │   ├── 📄 BlogPage.tsx
+    │   │   └── 📂 admin/             # Dashboard, Products, Orders...
+    │   │
+    │   ├── 📂 hooks/                 # Custom React hooks
+    │   ├── 📂 store/                 # Zustand stores
+    │   ├── 📂 services/              # Axios API calls
+    │   └── 📂 types/                 # TypeScript interfaces
+    │
+    ├── 📄 .env                       # Frontend env variables
+    ├── 📄 index.html
+    └── 📄 package.json
+```
+
+---
+
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
+
+## 🖥️ Prerequisites
+
+Install these **once** on the machine:
+
+| Tool | Version | Download |
+|:---:|:---:|:---:|
+| <img src="https://skillicons.dev/icons?i=nodejs" width="20"/> Node.js | v18 LTS+ | [nodejs.org](https://nodejs.org) |
+| <img src="https://skillicons.dev/icons?i=git" width="20"/> Git | Latest | [git-scm.com](https://git-scm.com) |
+
+Verify installation:
+
+```bash
+node --version   # Should print v18.x.x or higher
+npm --version    # Should print 9.x.x or higher
+git --version    # Should print git version x.x.x
+```
+
+---
+
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## 🚀 Local Setup Guide
 
-### Step 1 — Get the Project
+### Step 1 — Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/HiveNest-Fullstack.git
-cd HiveNest-Fullstack
+git clone https://github.com/malikmahmad/HiveNest-E-Commerce-Platform.git
+cd HiveNest-E-Commerce-Platform
 ```
-
-Or just copy the project folder to the laptop and open a terminal inside `HiveNest-Fullstack`.
 
 ---
 
 ### Step 2 — Backend Setup
 
-Open a terminal and run:
-
 ```bash
+# Navigate to backend
 cd backend
+
+# Install dependencies
 npm install
-```
 
-The `.env` file is already configured for local development. No changes needed.
-
-Run database setup (only needed **once**):
-
-```bash
+# Generate Prisma client
 npx prisma generate
-npx prisma migrate dev --name init
+
+# Push database schema (SQLite — no server needed)
+npx prisma db push
+
+# Seed with sample data & admin account
 npm run db:seed
 ```
 
-> `db:seed` creates sample products, categories, blogs, and the admin account.
+> ✅ You'll see: products, categories, blogs, and the admin account created.
 
 ---
 
 ### Step 3 — Frontend Setup
 
-Open a **second terminal** (keep the first one open) and run:
+Open a **new terminal**, keep the backend terminal open:
 
 ```bash
+# Navigate to frontend
 cd frontend
+
+# Install dependencies
 npm install
 ```
-
-The `.env` file is already configured. No changes needed.
 
 ---
 
@@ -132,89 +343,105 @@ The `.env` file is already configured. No changes needed.
 cd backend
 npm run dev
 ```
-You should see: `🚀 HiveNest API running on port 5000`
+```
+✅  HiveNest API running on port 5000 [development]
+```
 
 **Terminal 2 — Frontend:**
 ```bash
 cd frontend
 npm run dev
 ```
-You should see: `Local: http://localhost:5173`
+```
+✅  Local:   http://localhost:5173/
+```
 
-Open browser → **http://localhost:5173** ✅
+Open your browser → **[http://localhost:5173](http://localhost:5173)** 🎉
 
 ---
 
-## � Default Admin Account
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
-After running `npm run db:seed`, the admin account is created automatically:
+## 🔑 Default Admin Account
+
+After seeding, the admin account is created automatically:
+
+<div align="center">
 
 | Field | Value |
-|---|---|
-| Email | `admin@hivenest.com` |
-| Password | `Admin@1234` |
-| Role | `SUPER_ADMIN` |
+|:---:|:---:|
+| 🌐 URL | `http://localhost:5173/admin` |
+| 📧 Email | `admin@hivenest.com` |
+| 🔒 Password | `Admin@1234` |
+| 👑 Role | `SUPER_ADMIN` |
 
-Login at: **http://localhost:5173/admin**
+</div>
+
+> ⚠️ Change the password immediately after first login in production.
 
 ---
+
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
 ## 👑 Making Someone a Super Admin
 
-You have two options:
-
-### Option A — Use Prisma Studio (GUI)
+### Option A — Prisma Studio (GUI, Recommended)
 
 ```bash
 cd backend
 npx prisma studio
 ```
 
-This opens a browser at `http://localhost:5555`.
+Opens at `http://localhost:5555`
 
-1. Click on the **User** table
-2. Find the user you want to promote
-3. Click on their row
-4. Change the `role` field to `SUPER_ADMIN`
-5. Click **Save 1 change**
+1. Click the **User** table
+2. Find the user → click their row
+3. Change `role` field to `SUPER_ADMIN`
+4. Click **Save 1 change** ✅
 
-### Option B — Direct Database Edit
+### Option B — Direct SQL
 
 ```bash
 cd backend
 npx prisma db execute --stdin <<EOF
-UPDATE User SET role = 'SUPER_ADMIN' WHERE email = 'client@example.com';
+UPDATE users SET role = 'SUPER_ADMIN' WHERE email = 'youremail@example.com';
 EOF
 ```
 
-Replace `client@example.com` with the actual email.
-
 ---
 
-## 🔑 Environment Variables Reference
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
-### Backend (`backend/.env`)
+## 🌍 Environment Variables
 
-These are already set for local development:
+### `backend/.env`
 
 ```env
+# ─── SERVER ──────────────────────────────────────────────────
 PORT=5000
 NODE_ENV=development
 FRONTEND_URL=http://localhost:5173
-DATABASE_URL="file:./dev.db"
-JWT_ACCESS_SECRET=your_super_secret_access_key_here_min_32_chars
-JWT_REFRESH_SECRET=your_super_secret_refresh_key_here_min_32_chars
-```
 
-Optional (needed for email sending):
-```env
+# ─── DATABASE ────────────────────────────────────────────────
+DATABASE_URL="file:./prisma/dev.db"
+
+# ─── JWT ─────────────────────────────────────────────────────
+JWT_ACCESS_SECRET=your_super_secret_access_key_min_32_chars
+JWT_REFRESH_SECRET=your_super_secret_refresh_key_min_32_chars
+JWT_ACCESS_EXPIRES=15m
+JWT_REFRESH_EXPIRES=7d
+
+# ─── EMAIL (SMTP) — optional ─────────────────────────────────
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
 SMTP_USER=your@gmail.com
 SMTP_PASS=your_gmail_app_password
+EMAIL_FROM="HiveNest <noreply@hivenest.com>"
 ```
 
-> To get a Gmail App Password: Google Account → Security → 2-Step Verification → App Passwords
+> 💡 To get a Gmail App Password: **Google Account → Security → 2-Step Verification → App Passwords**
 
-### Frontend (`frontend/.env`)
+### `frontend/.env`
 
 ```env
 VITE_API_URL=http://localhost:5000/api/v1
@@ -223,72 +450,163 @@ VITE_APP_NAME=HiveNest
 
 ---
 
-## � Common Issues
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
-### "Port already in use"
+## 📡 API Reference
+
+<details>
+<summary><b>🔐 Auth Routes</b></summary>
+
+| Method | Endpoint | Description | Auth |
+|:---:|:---|:---|:---:|
+| `POST` | `/api/v1/auth/register` | Register new user | ❌ |
+| `POST` | `/api/v1/auth/login` | Login with email/password | ❌ |
+| `POST` | `/api/v1/auth/google` | Google OAuth login | ❌ |
+| `POST` | `/api/v1/auth/refresh` | Refresh access token | ❌ |
+| `POST` | `/api/v1/auth/logout` | Logout & clear tokens | ✅ |
+| `GET` | `/api/v1/auth/verify-email` | Verify email token | ❌ |
+| `POST` | `/api/v1/auth/forgot-password` | Send reset email | ❌ |
+| `POST` | `/api/v1/auth/reset-password` | Reset with token | ❌ |
+| `GET` | `/api/v1/auth/me` | Get current user | ✅ |
+| `PATCH` | `/api/v1/auth/me` | Update profile | ✅ |
+
+</details>
+
+<details>
+<summary><b>🛍️ Product Routes</b></summary>
+
+| Method | Endpoint | Description | Auth |
+|:---:|:---|:---|:---:|
+| `GET` | `/api/v1/products` | List all products (filters, pagination) | ❌ |
+| `GET` | `/api/v1/products/home` | Homepage featured data | ❌ |
+| `GET` | `/api/v1/products/search` | Search products | ❌ |
+| `GET` | `/api/v1/products/:slug` | Single product detail | ❌ |
+| `POST` | `/api/v1/products` | Create product | 👑 Admin |
+| `PATCH` | `/api/v1/products/:id` | Update product | 👑 Admin |
+| `DELETE` | `/api/v1/products/:id` | Delete product | 👑 Admin |
+
+</details>
+
+<details>
+<summary><b>🛒 Cart & Orders</b></summary>
+
+| Method | Endpoint | Description | Auth |
+|:---:|:---|:---|:---:|
+| `GET` | `/api/v1/cart` | Get user cart | ✅ |
+| `POST` | `/api/v1/cart` | Add item to cart | ✅ |
+| `PATCH` | `/api/v1/cart/:id` | Update quantity | ✅ |
+| `DELETE` | `/api/v1/cart/:id` | Remove item | ✅ |
+| `DELETE` | `/api/v1/cart` | Clear cart | ✅ |
+| `GET` | `/api/v1/orders` | Get user orders | ✅ |
+| `POST` | `/api/v1/orders` | Place new order | ✅ |
+| `POST` | `/api/v1/orders/:id/cancel` | Cancel order | ✅ |
+
+</details>
+
+<details>
+<summary><b>📧 Newsletter</b></summary>
+
+| Method | Endpoint | Description | Auth |
+|:---:|:---|:---|:---:|
+| `POST` | `/api/v1/newsletter/subscribe` | Subscribe to newsletter | ❌ |
+| `GET` | `/api/v1/newsletter/unsubscribe` | Unsubscribe via token | ❌ |
+| `GET` | `/api/v1/admin/newsletter` | List all subscribers | 👑 Admin |
+
+</details>
+
+---
+
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
+
+## 🐛 Common Issues
+
+<details>
+<summary><b>Port already in use</b></summary>
+
 ```bash
-# Windows — find and kill the process
+# Windows — find and kill the process using port 5000
 netstat -ano | findstr :5000
 taskkill /PID <PID_NUMBER> /F
 ```
 
-### "Prisma client not generated"
+</details>
+
+<details>
+<summary><b>Prisma client not generated</b></summary>
+
 ```bash
 cd backend
 npx prisma generate
 ```
 
-### "No products showing on homepage"
-Make sure the seed ran successfully:
+</details>
+
+<details>
+<summary><b>No products showing on homepage</b></summary>
+
 ```bash
 cd backend
 npm run db:seed
 ```
 
-### "Images not loading"
-Make sure **both** backend and frontend terminals are running at the same time.
+</details>
 
-### Database reset (deletes all data, use carefully)
+<details>
+<summary><b>Images not loading</b></summary>
+
+Make sure **both** backend (`port 5000`) and frontend (`port 5173`) terminals are running simultaneously. Images are served from the backend.
+
+</details>
+
+<details>
+<summary><b>Full database reset</b></summary>
+
+> ⚠️ This deletes ALL data. Use carefully.
+
 ```bash
 cd backend
-npx prisma migrate reset
+npx prisma db push --force-reset
 npm run db:seed
 ```
+
+</details>
 
 ---
 
-## 📁 Project Structure
+<img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif" width="100%">
 
-```
-HiveNest-Fullstack/
-├── backend/
-│   ├── prisma/
-│   │   ├── schema.prisma     # Database schema
-│   │   ├── seed.ts           # Sample data seeder
-│   │   └── dev.db            # SQLite database (auto-created)
-│   ├── src/
-│   │   ├── config/           # App configuration
-│   │   ├── controllers/      # Route handlers
-│   │   ├── middleware/        # Auth, error handling
-│   │   ├── routes/           # API routes
-│   │   ├── utils/            # Helpers (JWT, email, cloudinary)
-│   │   └── server.ts         # Entry point
-│   ├── uploads/              # Uploaded images stored here
-│   └── .env                  # Backend environment variables
-│
-└── frontend/
-    ├── src/
-    │   ├── components/       # Reusable UI components
-    │   ├── pages/            # Page components
-    │   ├── hooks/            # Custom React hooks
-    │   ├── store/            # Zustand state stores
-    │   ├── services/         # API service calls
-    │   └── types/            # TypeScript types
-    └── .env                  # Frontend environment variables
-```
+## 👤 Author
+
+<div align="center">
+
+<img src="https://github.com/malikmahmad.png" width="120" style="border-radius:50%" />
+
+### Malik Muhammad Ahmad
+
+*Full-Stack Developer*
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/malik-muhammad-ahmad-788b62338)
+[![Twitter/X](https://img.shields.io/badge/Twitter-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/MalikMuhammox1)
+[![Instagram](https://img.shields.io/badge/Instagram-E4405F?style=for-the-badge&logo=instagram&logoColor=white)](https://www.instagram.com/priv_ahmad007/)
+[![Facebook](https://img.shields.io/badge/Facebook-1877F2?style=for-the-badge&logo=facebook&logoColor=white)](https://www.facebook.com/profile.php?id=100086022546117)
+
+📞 **+92 326 2770290**
+
+</div>
 
 ---
 
 <div align="center">
-  <strong>Built with 🩶 — HiveNest E-Commerce Platform</strong>
+
+<!-- Animated Footer -->
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:c0392b,50:ff6b9d,100:ff4785&height=120&section=footer&animation=fadeIn" width="100%" />
+
+<br/>
+
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=16&pause=1000&color=FF4785&center=true&vCenter=true&width=500&lines=If+this+helped+you%2C+drop+a+⭐+Star!;Built+with+❤️+by+Malik+Muhammad+Ahmad;HiveNest+—+Where+Fashion+Meets+Tech" alt="footer typing" />
+
+<br/>
+
+*© 2026 HiveNest. All rights reserved.*
+
 </div>
