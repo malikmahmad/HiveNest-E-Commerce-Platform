@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import prisma from '../config/prisma';
 import { ApiResponse, AppError } from '../utils/apiResponse';
 import { sendEmail } from '../utils/email';
+import { logger } from '../utils/logger';
 import { config } from '../config';
 
 // ─── Welcome email template ───────────────────────────────────
@@ -100,12 +101,12 @@ export const subscribe = async (req: Request, res: Response) => {
     data: { email: normalizedEmail },
   });
 
-  // Send welcome email (non-blocking — don't fail if email fails)
+  // Send welcome email (non-blocking — don't fail the subscription if email fails)
   sendEmail(
     normalizedEmail,
     '🎉 Welcome to HiveNest Newsletter!',
     welcomeEmailHtml(normalizedEmail, subscriber.unsubToken)
-  ).catch(() => {/* silent */});
+  ).catch((err) => logger.error(`Newsletter welcome email failed for ${normalizedEmail}: ${err?.message}`));
 
   return ApiResponse.created(res, null, 'Subscribed successfully! Check your email for a welcome message.');
 };

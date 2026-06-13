@@ -2,32 +2,36 @@ import nodemailer from 'nodemailer';
 import { config } from '../config';
 import { logger } from './logger';
 
-let _transporter: nodemailer.Transporter | null = null;
-
+// Always create a fresh transporter — no singleton caching
+// (caching caused silent failures when Gmail sessions expired)
 async function getTransporter(): Promise<nodemailer.Transporter> {
-  if (_transporter) return _transporter;
-
   const smtpConfigured = config.smtp.user && config.smtp.user !== 'your_email@gmail.com';
 
   if (smtpConfigured) {
-    _transporter = nodemailer.createTransport({
+    const transporter = nodemailer.createTransport({
       host: config.smtp.host,
       port: config.smtp.port,
       secure: config.smtp.port === 465,
       auth: { user: config.smtp.user, pass: config.smtp.pass },
-    });
+      // Force fresh connection every time — avoids stale TLS sessions
+      pool: false,
+      // Longer timeouts for slow Gmail responses
+      connectionTimeout: 10000,
+      greetingTimeout: 10000,
+      socketTimeout: 15000,
+    } as any);
+    return transporter;
   } else {
     const testAccount = await nodemailer.createTestAccount();
-    _transporter = nodemailer.createTransport({
+    const transporter = nodemailer.createTransport({
       host: 'smtp.ethereal.email',
       port: 587,
       secure: false,
       auth: { user: testAccount.user, pass: testAccount.pass },
     });
     logger.info(`Test email: ${testAccount.user} — preview at https://ethereal.email`);
+    return transporter;
   }
-
-  return _transporter;
 }
 
 const baseTemplate = (content: string) => `
@@ -71,8 +75,11 @@ export const sendEmail = async (to: string, subject: string, html: string) => {
     if (previewUrl) {
       console.log(`\nEmail Preview — To: ${to} | Subject: ${subject}\nURL: ${previewUrl}\n`);
     }
-  } catch (err) {
-    logger.error(`Email failed to ${to}:`, err);
+  } catch (err: any) {
+    // Log the FULL error so we can see what Gmail is actually rejecting
+    logger.error(`Email failed to ${to} [${subject}]: ${err?.message || err}`);
+    if (err?.responseCode) logger.error(`SMTP response code: ${err.responseCode} — ${err.response}`);
+    throw err; // Re-throw so callers know it failed
   }
 };
 

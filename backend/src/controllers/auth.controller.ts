@@ -7,6 +7,7 @@ import { config } from '../config';
 import { ApiResponse, AppError } from '../utils/apiResponse';
 import { generateTokenPair, verifyRefreshToken } from '../utils/jwt';
 import { sendVerificationEmail, sendPasswordResetEmail } from '../utils/email';
+import { logger } from '../utils/logger';
 import { AuthRequest } from '../middleware/auth';
 
 const googleClient = new OAuth2Client(config.google.clientId);
@@ -39,7 +40,9 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
   });
 
   if (smtpConfigured) {
-    sendVerificationEmail(email, name, emailVerifyToken).catch(() => {});
+    sendVerificationEmail(email, name, emailVerifyToken).catch((err) => {
+      logger.error(`Verification email failed for ${email}: ${err?.message}`);
+    });
     ApiResponse.created(res, { user }, 'Account created! Please check your email to verify your account.');
   } else {
     const payload = { userId: user.id, email: user.email, role: user.role };
@@ -187,7 +190,9 @@ export const forgotPassword = async (req: Request, res: Response) => {
     data: { resetPasswordToken: resetToken, resetPasswordExp: resetExp },
   });
 
-  sendPasswordResetEmail(email, user.name, resetToken).catch(() => {});
+  sendPasswordResetEmail(email, user.name, resetToken).catch((err) => {
+    logger.error(`Forgot password email failed for ${email}: ${err?.message}`);
+  });
   ApiResponse.success(res, null, 'If that email exists, a reset link has been sent');
 };
 
