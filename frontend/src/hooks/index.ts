@@ -25,7 +25,11 @@ export const useAuth = () => {
       queryClient.invalidateQueries({ queryKey: ['wishlist'] });
       toast.success(`Welcome back, ${user.name}!`);
     },
-    onError: (err: any) => toast.error(err.response?.data?.message || 'Login failed'),
+    onError: (err: any) => {
+      const data = err.response?.data;
+      const msg = typeof data === 'string' ? data : data?.message || 'Login failed';
+      toast.error(msg);
+    },
   });
 
   const registerMutation = useMutation({
@@ -49,7 +53,14 @@ export const useAuth = () => {
         toast.success('Account created! Please check your email to verify your account.');
       }
     },
-    onError: (err: any) => toast.error(err.response?.data?.message || 'Registration failed'),
+    onError: (err: any) => {
+      // Handle rate limit (plain text), Zod errors (array), or AppError (string)
+      const data = err.response?.data;
+      const msg = typeof data === 'string'
+        ? data
+        : data?.errors?.[0]?.message || data?.message || 'Registration failed';
+      toast.error(msg);
+    },
   });
 
   const googleLoginMutation = useMutation({

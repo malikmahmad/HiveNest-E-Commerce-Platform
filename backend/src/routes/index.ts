@@ -42,11 +42,12 @@ const localUpload = multer({
 });
 
 const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 10, message: 'Too many attempts' });
+const registerLimiter = rateLimit({ windowMs: 60 * 60 * 1000, max: 10, message: 'Too many registration attempts, please try again later.' });
 const forgotPasswordLimiter = rateLimit({ windowMs: 60 * 60 * 1000, max: 5, message: 'Too many password reset attempts' });
 const searchLimiter = rateLimit({ windowMs: 60 * 1000, max: 30 });
 
 const authRouter = Router();
-authRouter.post('/register', authLimiter, validate(registerSchema), auth.register);
+authRouter.post('/register', registerLimiter, validate(registerSchema), auth.register);
 authRouter.post('/login', authLimiter, validate(loginSchema), auth.login);
 authRouter.post('/google', authLimiter, auth.googleLogin);
 authRouter.post('/refresh', auth.refreshToken);

@@ -24,7 +24,11 @@ export default function RegisterPage() {
     if (!allPassed) { toast.error('Password does not meet requirements'); return; }
     try {
       await register(form);
-      navigate('/', { replace: true });
+      // If SMTP configured → email verification required, go to login
+      // If no SMTP → setAuth called in hook, isAuthenticated becomes true → useEffect redirects
+      if (!isAuthenticated) {
+        navigate('/login', { replace: true });
+      }
     } catch {
       // error shown by hook
     }
