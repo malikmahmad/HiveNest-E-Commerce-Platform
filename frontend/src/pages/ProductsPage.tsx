@@ -68,7 +68,7 @@ export default function ProductsPage() {
   return (
     <>
       <Helmet>
-        <title>{pageTitle}</title>
+        <title>HiveNest</title>
         <meta name="description" content="Shop premium products at HiveNest." />
       </Helmet>
 

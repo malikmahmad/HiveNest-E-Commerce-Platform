@@ -92,7 +92,7 @@ export default function CheckoutPage() {
 
   return (
     <>
-      <Helmet><title>Checkout — HiveNest</title></Helmet>
+      <Helmet><title>HiveNest</title></Helmet>
       <div className="max-w-6xl mx-auto px-4 py-10">
         <h1 className="text-2xl font-bold text-gray-900 mb-8">Checkout</h1>
 

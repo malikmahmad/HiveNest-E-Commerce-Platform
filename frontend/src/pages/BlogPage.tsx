@@ -31,7 +31,7 @@ export default function BlogPage() {
 
   return (
     <>
-      <Helmet><title>Blog — HiveNest</title><meta name="description" content="Fashion tips, style guides, and product reviews from HiveNest." /></Helmet>
+      <Helmet><title>HiveNest</title></Helmet>
       <div className="max-w-7xl mx-auto px-4 py-10">
         {/* Header */}
         <div className="text-center mb-10">

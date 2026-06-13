@@ -56,7 +56,7 @@ export default function ProductDetail() {
   return (
     <>
       <Helmet>
-        <title>{product.metaTitle || `${product.name} — HiveNest`}</title>
+        <title>HiveNest</title>
         <meta name="description" content={product.metaDesc || product.shortDesc || product.description.slice(0, 160)} />
       </Helmet>
 

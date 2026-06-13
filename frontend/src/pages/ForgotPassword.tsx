@@ -17,7 +17,7 @@ export default function ForgotPassword() {
 
   return (
     <>
-      <Helmet><title>Forgot Password — HiveNest</title></Helmet>
+      <Helmet><title>HiveNest</title></Helmet>
       <div className="min-h-[70vh] flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">

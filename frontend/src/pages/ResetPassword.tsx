@@ -38,7 +38,7 @@ export function ResetPassword() {
 
   return (
     <>
-      <Helmet><title>Reset Password — HiveNest</title></Helmet>
+      <Helmet><title>HiveNest</title></Helmet>
       <div className="min-h-[70vh] flex items-center justify-center px-4">
         <div className="w-full max-w-md bg-white rounded-2xl border border-gray-100 shadow-sm p-8">
           <h1 className="text-xl font-bold text-gray-900 mb-2 text-center">Set New Password</h1>

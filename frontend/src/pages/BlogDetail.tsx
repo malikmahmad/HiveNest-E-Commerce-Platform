@@ -34,7 +34,7 @@ export default function BlogDetail() {
   return (
     <>
       <Helmet>
-        <title>{blog.metaTitle || `${blog.title} — HiveNest Blog`}</title>
+        <title>HiveNest</title>
         <meta name="description" content={blog.metaDesc || blog.excerpt} />
       </Helmet>
 
