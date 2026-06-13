@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Helmet } from 'react-helmet-async';
 import { Loader2, Eye, EyeOff } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { useAuth } from '../hooks';
 import { useAuthStore } from '../store';
 
@@ -19,6 +20,8 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const allPassed = form.password.length >= 8 && /[A-Z]/.test(form.password) && /[0-9]/.test(form.password);
+    if (!allPassed) { toast.error('Password does not meet requirements'); return; }
     try {
       await register(form);
       navigate('/', { replace: true });
@@ -72,8 +75,8 @@ export default function RegisterPage() {
                   ))}
                 </div>
               </div>
-              <button type="submit" disabled={isRegistering}
-                className="w-full bg-primary text-white py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-primary-dark transition-colors disabled:opacity-60 mt-2">
+              <button type="submit" disabled={isRegistering || form.password.length < 8 || !/[A-Z]/.test(form.password) || !/[0-9]/.test(form.password)}
+                className="w-full bg-primary text-white py-3.5 rounded-xl font-semibold flex items-center justify-center gap-2 hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-2">
                 {isRegistering ? <><Loader2 size={16} className="animate-spin" /> Creating...</> : '✨ Create Account'}
               </button>
             </form>
