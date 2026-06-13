@@ -35,30 +35,22 @@ export const useAuth = () => {
   const registerMutation = useMutation({
     mutationFn: (data: { name: string; email: string; password: string }) => authAPI.register(data),
     onSuccess: ({ data }: any) => {
-      if (data?.data?.accessToken && data?.data?.user) {
-        const user = data.data.user;
-        setAuth({
-          id: user.id,
-          name: user.name,
-          email: user.email,
-          avatar: user.avatar ?? undefined,
-          role: user.role ?? 'USER',
-          isEmailVerified: user.isEmailVerified ?? false,
-        }, data.data.accessToken);
-        queryClient.invalidateQueries({ queryKey: ['cart'] });
-        queryClient.invalidateQueries({ queryKey: ['wishlist'] });
-        toast.success(`Welcome to HiveNest, ${user.name}!`);
-      } else {
-        // Email verification required — don't auto-login
-        toast.success('Account created! Please check your email to verify your account.');
-      }
+      const user = data.data.user;
+      setAuth({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar ?? undefined,
+        role: user.role ?? 'USER',
+        isEmailVerified: true,
+      }, data.data.accessToken);
+      queryClient.invalidateQueries({ queryKey: ['cart'] });
+      queryClient.invalidateQueries({ queryKey: ['wishlist'] });
+      toast.success(`Welcome to HiveNest, ${user.name}! 🎉`);
     },
     onError: (err: any) => {
-      // Handle rate limit (plain text), Zod errors (array), or AppError (string)
-      const data = err.response?.data;
-      const msg = typeof data === 'string'
-        ? data
-        : data?.errors?.[0]?.message || data?.message || 'Registration failed';
+      const d = err.response?.data;
+      const msg = typeof d === 'string' ? d : d?.errors?.[0]?.message || d?.message || 'Registration failed';
       toast.error(msg);
     },
   });

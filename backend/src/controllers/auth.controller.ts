@@ -25,35 +25,35 @@ export const register = async (req: Request, res: Response, next: NextFunction) 
   if (existing) throw new AppError('Email already registered', 409);
 
   const hashedPassword = await bcrypt.hash(password, 12);
-  const emailVerifyToken = crypto.randomBytes(32).toString('hex');
-  const smtpConfigured = config.smtp.user && config.smtp.user !== 'your_email@gmail.com';
 
   const user = await prisma.user.create({
     data: {
       name,
       email,
       password: hashedPassword,
-      emailVerifyToken: smtpConfigured ? emailVerifyToken : null,
-      isEmailVerified: !smtpConfigured,
+      isEmailVerified: true,   // no email verification required
+      emailVerifyToken: null,
     },
-    select: { id: true, name: true, email: true, role: true, avatar: true },
+    select: { id: true, name: true, email: true, role: true, avatar: true, isEmailVerified: true },
   });
 
-  if (smtpConfigured) {
-    sendVerificationEmail(email, name, emailVerifyToken).catch((err) => {
-      logger.error(`Verification email failed for ${email}: ${err?.message}`);
-    });
-    ApiResponse.created(res, { user }, 'Account created! Please check your email to verify your account.');
-  } else {
-    const payload = { userId: user.id, email: user.email, role: user.role };
-    const { accessToken, refreshToken } = generateTokenPair(payload);
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { refreshToken: await bcrypt.hash(refreshToken, 10) },
-    });
-    res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: config.isProd, sameSite: 'strict', maxAge: 7 * 24 * 60 * 60 * 1000 });
-    ApiResponse.created(res, { user, accessToken }, 'Account created successfully! Welcome to HiveNest');
-  }
+  // Auto-login: generate tokens just like login does
+  const payload = { userId: user.id, email: user.email, role: user.role };
+  const { accessToken, refreshToken } = generateTokenPair(payload);
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { refreshToken: await bcrypt.hash(refreshToken, 10) },
+  });
+
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    secure: config.isProd,
+    sameSite: 'strict',
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+
+  ApiResponse.created(res, { user, accessToken }, `Welcome to HiveNest, ${name}!`);
 };
 
 export const verifyEmail = async (req: Request, res: Response) => {
@@ -80,11 +80,6 @@ export const login = async (req: Request, res: Response) => {
 
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) throw new AppError('Invalid credentials', 401);
-
-  const smtpConfigured = config.smtp.user && config.smtp.user !== 'your_email@gmail.com';
-  if (smtpConfigured && !user.isEmailVerified) {
-    throw new AppError('Please verify your email before logging in. Check your inbox.', 403);
-  }
 
   const payload = { userId: user.id, email: user.email, role: user.role };
   const { accessToken, refreshToken } = generateTokenPair(payload);
