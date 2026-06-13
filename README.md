@@ -601,7 +601,7 @@ npm run db:seed
 
 <br/>
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=16&pause=1000&color=FF4785&center=true&vCenter=true&width=500&lines=If+this+helped+you%2C+drop+a+%E2%AD%90+Star!;Built+with+%E2%9D%A4%EF%B8%8F+by+Malik+Muhammad+Ahmad;HiveNest+%E2%80%94+Where+Fashion+Meets+Tech" alt="If this helped you, drop a ⭐ Star! — Built with ❤️ by Malik Muhammad Ahmad" />
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=16&pause=1000&color=FF4785&center=true&vCenter=true&width=500&lines=If+this+helped+you%2C+drop+a+%E2%AD%90+Star!;Built+with+%E2%9D%A4%EF%B8%8F+by+Malik+Muhammad+Ahmad;HiveNest+%E2%80%94+Where+Fashion+Meets+Tech" alt="If this helped you, drop a ⭐ Star! — Built with 🩶 by Malik Muhammad Ahmad" />
 
 <br/>
 
