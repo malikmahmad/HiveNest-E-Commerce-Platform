@@ -5,7 +5,7 @@
 
 <!-- Animated Logo Text -->
 <a href="https://github.com/malikmahmad/HiveNest-E-Commerce-Platform">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=28&pause=1000&color=FF4785&center=true&vCenter=true&width=600&lines=🐝+Welcome+to+HiveNest;Full-Stack+E-Commerce+Platform;React+%2B+Node.js+%2B+Prisma;Built+by+Malik+Muhammad+Ahmad" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=28&pause=1000&color=FF4785&center=true&vCenter=true&width=600&lines=%F0%9F%90%9D+Welcome+to+HiveNest;Full-Stack+E-Commerce+Platform;React+%2B+Node.js+%2B+Prisma;Built+by+Malik+Muhammad+Ahmad" alt="HiveNest — Full-Stack E-Commerce Platform" />
 </a>
 
 <br/>
@@ -125,10 +125,10 @@
 ### Frontend
 | Technology | Version | Purpose |
 |:---:|:---:|:---|
-| <img src="https://skillicons.dev/icons?i=react" width="20"/> React | 19.0 | UI Framework |
-| <img src="https://skillicons.dev/icons?i=ts" width="20"/> TypeScript | 5.4 | Type Safety |
-| <img src="https://skillicons.dev/icons?i=vite" width="20"/> Vite | 5.2 | Build Tool & Dev Server |
-| <img src="https://skillicons.dev/icons?i=tailwind" width="20"/> Tailwind CSS | 3.4 | Utility-first Styling |
+| ⚛️ React | 19.0 | UI Framework |
+| 🔷 TypeScript | 5.4 | Type Safety |
+| ⚡ Vite | 5.2 | Build Tool & Dev Server |
+| 🎨 Tailwind CSS | 3.4 | Utility-first Styling |
 | 🐻 Zustand | 4.5 | Global State Management |
 | 🔄 TanStack Query | 5.28 | Server State & Caching |
 | 🎞️ Framer Motion | 11.1 | Animations |
@@ -138,11 +138,11 @@
 ### Backend
 | Technology | Version | Purpose |
 |:---:|:---:|:---|
-| <img src="https://skillicons.dev/icons?i=nodejs" width="20"/> Node.js | 20+ | Runtime |
-| <img src="https://skillicons.dev/icons?i=express" width="20"/> Express | 4.18 | Web Framework |
-| <img src="https://skillicons.dev/icons?i=ts" width="20"/> TypeScript | 5.4 | Type Safety |
-| 🔷 Prisma ORM | 5.10 | Database Toolkit |
-| <img src="https://skillicons.dev/icons?i=sqlite" width="20"/> SQLite | — | Database (zero config) |
+| 🟩 Node.js | 20+ | Runtime |
+| 🚂 Express | 4.18 | Web Framework |
+| 🔷 TypeScript | 5.4 | Type Safety |
+| � Prisma ORM | 5.10 | Database Toolkit |
+| 🗄️ SQLite | — | Database (zero config) |
 | 🔐 JWT | 9.0 | Auth (Access + Refresh) |
 | 📧 Nodemailer | 6.9 | Email Service |
 | 🛡️ Helmet | 7.1 | Security Headers |
@@ -273,8 +273,8 @@ Install these **once** on the machine:
 
 | Tool | Version | Download |
 |:---:|:---:|:---:|
-| <img src="https://skillicons.dev/icons?i=nodejs" width="20"/> Node.js | v18 LTS+ | [nodejs.org](https://nodejs.org) |
-| <img src="https://skillicons.dev/icons?i=git" width="20"/> Git | Latest | [git-scm.com](https://git-scm.com) |
+| 🟩 Node.js | v18 LTS+ | [nodejs.org](https://nodejs.org) |
+| 🔧 Git | Latest | [git-scm.com](https://git-scm.com) |
 
 Verify installation:
 
@@ -601,7 +601,7 @@ npm run db:seed
 
 <br/>
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=16&pause=1000&color=FF4785&center=true&vCenter=true&width=500&lines=If+this+helped+you%2C+drop+a+⭐+Star!;Built+with+❤️+by+Malik+Muhammad+Ahmad;HiveNest+—+Where+Fashion+Meets+Tech" alt="footer typing" />
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=16&pause=1000&color=FF4785&center=true&vCenter=true&width=500&lines=If+this+helped+you%2C+drop+a+%E2%AD%90+Star!;Built+with+%E2%9D%A4%EF%B8%8F+by+Malik+Muhammad+Ahmad;HiveNest+%E2%80%94+Where+Fashion+Meets+Tech" alt="If this helped you, drop a ⭐ Star! — Built with ❤️ by Malik Muhammad Ahmad" />
 
 <br/>
 
