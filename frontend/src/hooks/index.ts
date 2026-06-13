@@ -11,10 +11,19 @@ export const useAuth = () => {
   const loginMutation = useMutation({
     mutationFn: (data: { email: string; password: string }) => authAPI.login(data),
     onSuccess: ({ data }) => {
-      setAuth(data.data.user, data.data.accessToken);
+      const user = data.data.user;
+      // Ensure all required fields exist with safe defaults
+      setAuth({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar ?? undefined,
+        role: user.role ?? 'USER',
+        isEmailVerified: user.isEmailVerified ?? true,
+      }, data.data.accessToken);
       queryClient.invalidateQueries({ queryKey: ['cart'] });
       queryClient.invalidateQueries({ queryKey: ['wishlist'] });
-      toast.success(`Welcome back, ${data.data.user.name}!`);
+      toast.success(`Welcome back, ${user.name}!`);
     },
     onError: (err: any) => toast.error(err.response?.data?.message || 'Login failed'),
   });
@@ -22,10 +31,23 @@ export const useAuth = () => {
   const registerMutation = useMutation({
     mutationFn: (data: { name: string; email: string; password: string }) => authAPI.register(data),
     onSuccess: ({ data }: any) => {
-      if (data?.data?.accessToken) {
-        setAuth(data.data.user, data.data.accessToken);
+      if (data?.data?.accessToken && data?.data?.user) {
+        const user = data.data.user;
+        setAuth({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          avatar: user.avatar ?? undefined,
+          role: user.role ?? 'USER',
+          isEmailVerified: user.isEmailVerified ?? false,
+        }, data.data.accessToken);
+        queryClient.invalidateQueries({ queryKey: ['cart'] });
+        queryClient.invalidateQueries({ queryKey: ['wishlist'] });
+        toast.success(`Welcome to HiveNest, ${user.name}!`);
+      } else {
+        // Email verification required — don't auto-login
+        toast.success('Account created! Please check your email to verify your account.');
       }
-      toast.success('Account created! Welcome to HiveNest');
     },
     onError: (err: any) => toast.error(err.response?.data?.message || 'Registration failed'),
   });
@@ -33,8 +55,16 @@ export const useAuth = () => {
   const googleLoginMutation = useMutation({
     mutationFn: (credential: string) => authAPI.googleLogin(credential),
     onSuccess: ({ data }) => {
-      setAuth(data.data.user, data.data.accessToken);
-      toast.success(`Welcome, ${data.data.user.name}!`);
+      const user = data.data.user;
+      setAuth({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar ?? undefined,
+        role: user.role ?? 'USER',
+        isEmailVerified: user.isEmailVerified ?? true,
+      }, data.data.accessToken);
+      toast.success(`Welcome, ${user.name}!`);
     },
     onError: (err: any) => toast.error(err.response?.data?.message || 'Google login failed'),
   });

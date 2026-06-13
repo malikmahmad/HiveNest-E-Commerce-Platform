@@ -69,7 +69,7 @@ export const useAuthStore = create<AuthState>()(
       updateUser: (updates) =>
         set((state) => ({ user: state.user ? { ...state.user, ...updates } : null })),
     }),
-    { name: 'hn-auth', partialize: (state) => ({ user: state.user, isAuthenticated: state.isAuthenticated }) }
+    { name: 'hn-auth', partialize: (state) => ({ user: state.user, isAuthenticated: state.isAuthenticated, accessToken: state.accessToken }) }
   )
 );
 
