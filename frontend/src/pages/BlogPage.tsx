@@ -31,7 +31,7 @@ export default function BlogPage() {
 
   return (
     <>
-      <Helmet><title>HiveNest</title></Helmet>
+      <Helmet><title>HiveNest - Premium E-Commerce Website</title><meta name="description" content="Fashion tips, style guides, and product reviews from HiveNest." /></Helmet>
       <div className="max-w-7xl mx-auto px-4 py-10">
         {/* Header */}
         <div className="text-center mb-10">
@@ -101,3 +101,4 @@ export default function BlogPage() {
     </>
   );
 }
+

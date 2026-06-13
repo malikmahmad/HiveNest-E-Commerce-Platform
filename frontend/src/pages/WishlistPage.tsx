@@ -10,7 +10,7 @@ export default function WishlistPage() {
 
   return (
     <>
-      <Helmet><title>HiveNest</title></Helmet>
+      <Helmet><title>HiveNest - Premium E-Commerce Website</title></Helmet>
       <div className="max-w-7xl mx-auto px-4 py-10">
         <h1 className="text-2xl font-bold text-gray-900 mb-8 flex items-center gap-3">
           <Heart size={26} className="text-primary" /> My Wishlist
@@ -32,3 +32,4 @@ export default function WishlistPage() {
     </>
   );
 }
+

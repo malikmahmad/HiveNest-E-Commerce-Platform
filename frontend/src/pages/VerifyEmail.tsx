@@ -18,7 +18,7 @@ export default function VerifyEmail() {
 
   return (
     <>
-      <Helmet><title>HiveNest</title></Helmet>
+      <Helmet><title>HiveNest - Premium E-Commerce Website</title></Helmet>
       <div className="min-h-[70vh] flex items-center justify-center px-4">
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm p-10 text-center max-w-md w-full">
           {status === 'loading' && <><Loader2 size={56} className="text-primary animate-spin mx-auto mb-4" /><h2 className="text-lg font-bold text-gray-900">Verifying your email...</h2></>}
@@ -29,3 +29,4 @@ export default function VerifyEmail() {
     </>
   );
 }
+

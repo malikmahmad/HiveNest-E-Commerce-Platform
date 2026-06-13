@@ -34,7 +34,7 @@ export default function BlogDetail() {
   return (
     <>
       <Helmet>
-        <title>HiveNest</title>
+        <title>HiveNest - Premium E-Commerce Website</title>
         <meta name="description" content={blog.metaDesc || blog.excerpt} />
       </Helmet>
 
@@ -118,3 +118,4 @@ export default function BlogDetail() {
     </>
   );
 }
+

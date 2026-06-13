@@ -36,7 +36,7 @@ export default function ProfilePage() {
 
   return (
     <>
-      <Helmet><title>HiveNest</title></Helmet>
+      <Helmet><title>HiveNest - Premium E-Commerce Website</title></Helmet>
       <div className="max-w-3xl mx-auto px-4 py-10">
         <div className="flex items-center gap-4 mb-8">
           <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center text-primary text-2xl font-bold">
@@ -129,3 +129,4 @@ export default function ProfilePage() {
     </>
   );
 }
+

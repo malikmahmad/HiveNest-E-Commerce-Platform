@@ -19,7 +19,7 @@ export default function OrderDetail() {
 
   return (
     <>
-      <Helmet><title>HiveNest</title></Helmet>
+      <Helmet><title>HiveNest - Premium E-Commerce Website</title></Helmet>
       <div className="max-w-4xl mx-auto px-4 py-10">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -136,3 +136,4 @@ export default function OrderDetail() {
     </>
   );
 }
+

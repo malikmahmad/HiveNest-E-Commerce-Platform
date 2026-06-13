@@ -68,7 +68,7 @@ export default function ProductsPage() {
   return (
     <>
       <Helmet>
-        <title>HiveNest</title>
+        <title>HiveNest - Premium E-Commerce Website</title>
         <meta name="description" content="Shop premium products at HiveNest." />
       </Helmet>
 
@@ -276,3 +276,4 @@ export default function ProductsPage() {
     </>
   );
 }
+

@@ -210,7 +210,7 @@ export default function HomePage() {
   return (
     <>
       <Helmet>
-        <title>HiveNest</title>
+        <title>HiveNest - Premium E-Commerce Website</title>
         <meta name="description" content="Shop premium fashion, jewelry, perfume and accessories at HiveNest. Free shipping on orders over $100." />
       </Helmet>
 
@@ -381,3 +381,4 @@ export default function HomePage() {
     </>
   );
 }
+

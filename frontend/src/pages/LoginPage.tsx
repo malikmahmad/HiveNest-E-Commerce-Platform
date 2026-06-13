@@ -30,7 +30,7 @@ export default function LoginPage() {
 
   return (
     <>
-      <Helmet><title>HiveNest</title></Helmet>
+      <Helmet><title>HiveNest - Premium E-Commerce Website</title></Helmet>
       <div className="min-h-[70vh] flex items-center justify-center px-4 py-12">
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
@@ -71,3 +71,4 @@ export default function LoginPage() {
     </>
   );
 }
+

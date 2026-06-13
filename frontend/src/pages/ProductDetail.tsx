@@ -56,7 +56,7 @@ export default function ProductDetail() {
   return (
     <>
       <Helmet>
-        <title>HiveNest</title>
+        <title>HiveNest - Premium E-Commerce Website</title>
         <meta name="description" content={product.metaDesc || product.shortDesc || product.description.slice(0, 160)} />
       </Helmet>
 
@@ -312,3 +312,4 @@ export default function ProductDetail() {
     </>
   );
 }
+
